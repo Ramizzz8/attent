@@ -73,7 +73,7 @@ return [
     |
     */
 
-    'home' => '/dashboard',
+    'home' => '/panel',
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +161,7 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Registro público desactivado: los empleados los crea el administrador.
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([
