@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Building2, ExternalLink, Inbox, Monitor, Settings, Users } from 'lucide-react';
+import { BarChart3, Building2, ExternalLink, Inbox, Monitor, Settings, Users } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -24,6 +24,7 @@ export function menuPanel(empresa: EmpresaPanel): NavItem[] {
     const items: NavItem[] = [{ title: 'Bandeja', href: dashboard(), icon: Inbox }];
     const admin: NavItem[] = empresa?.esAdmin
         ? [
+              { title: 'Estadísticas', href: '/panel/estadisticas', icon: BarChart3 },
               { title: 'Empleados', href: '/panel/empleados', icon: Users },
               { title: 'Ajustes', href: '/panel/ajustes', icon: Settings },
           ]

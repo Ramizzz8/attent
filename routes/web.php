@@ -3,6 +3,7 @@
 use App\Http\Controllers\Panel\AdminController;
 use App\Http\Controllers\Panel\AsignacionController;
 use App\Http\Controllers\Panel\BandejaController;
+use App\Http\Controllers\Panel\EstadisticasController;
 use App\Http\Controllers\Panel\EstadoController;
 use App\Http\Controllers\Panel\FincasController;
 use App\Http\Controllers\Panel\MensajeController;
@@ -34,6 +35,7 @@ Route::middleware(['auth', 'verified', 'empresa.panel'])->group(function () {
             Route::post('empleados', [AdminController::class, 'crearEmpleado'])->name('empleados.store');
             Route::patch('empleados/{empleado}', [AdminController::class, 'cambiarRol'])->whereNumber('empleado')->name('empleados.update');
             Route::delete('empleados/{empleado}', [AdminController::class, 'eliminarEmpleado'])->whereNumber('empleado')->name('empleados.destroy');
+            Route::get('estadisticas', [EstadisticasController::class, 'index'])->name('estadisticas');
             Route::get('ajustes', [AdminController::class, 'ajustes'])->name('ajustes.edit');
             Route::post('ajustes', [AdminController::class, 'guardarAjustes'])->name('ajustes.update');
             Route::post('equipos', [SoporteItController::class, 'store'])->name('equipos.store');
