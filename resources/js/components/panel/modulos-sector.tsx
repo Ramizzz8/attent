@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react';
+import type { ComponentProps } from 'react';
+import { ModuloFincasPanel } from '@/components/sectores/fincas/modulo-panel';
 import { ModuloTallerPanel } from '@/components/sectores/taller/modulo-panel';
-import type { PresupuestoVista } from '@/components/sectores/taller/presupuesto';
 import type { TicketPanel } from '@/pages/panel/ticket';
 
 /** Paneles propios de cada sector dentro del detalle del ticket (presupuestos, proveedor, triaje…). */
@@ -9,14 +10,9 @@ export function ModulosSector({ ticket }: { ticket: TicketPanel }) {
 
     switch (sector) {
         case 'taller':
-            return (
-                <ModuloTallerPanel
-                    numero={ticket.numero}
-                    vehiculo={ticket.vehiculo as Parameters<typeof ModuloTallerPanel>[0]['vehiculo']}
-                    presupuestos={(ticket.presupuestos as PresupuestoVista[]) ?? []}
-                    puedePresupuestar={Boolean(ticket.puedePresupuestar)}
-                />
-            );
+            return <ModuloTallerPanel {...(ticket as unknown as ComponentProps<typeof ModuloTallerPanel>)} numero={ticket.numero} />;
+        case 'fincas':
+            return <ModuloFincasPanel {...(ticket as unknown as ComponentProps<typeof ModuloFincasPanel>)} numero={ticket.numero} />;
         default:
             return null;
     }

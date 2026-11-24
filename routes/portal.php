@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Portal\AccesoController;
+use App\Http\Controllers\Portal\AfectadoController;
 use App\Http\Controllers\Portal\MensajePortalController;
 use App\Http\Controllers\Portal\PortalController;
 use App\Http\Controllers\Portal\PresupuestoPortalController;
@@ -22,6 +23,11 @@ Route::prefix('{empresa}')
         Route::post('tickets', [TicketPortalController::class, 'store'])->middleware('throttle:10,1')->name('tickets.store');
         Route::get('pendiente', [PortalController::class, 'pendiente'])->name('pendiente');
 
+        // Administrador de fincas: formulario por edificio, incidencias repetidas y afectados.
+        Route::get('edificio/{edificio}', [AfectadoController::class, 'edificio'])->name('edificio');
+        Route::get('duplicados', [AfectadoController::class, 'duplicados'])->middleware('throttle:60,1')->name('duplicados');
+        Route::post('tickets/{numero}/afectado', [AfectadoController::class, 'store'])->whereNumber('numero')->middleware('throttle:10,1')->name('afectado');
+
         Route::get('acceder', [AccesoController::class, 'create'])->name('acceder');
         Route::post('acceder', [AccesoController::class, 'store'])->middleware('throttle:5,1');
         Route::post('login', [AccesoController::class, 'login'])->middleware('throttle:5,1')->name('login');
@@ -29,6 +35,7 @@ Route::prefix('{empresa}')
         Route::middleware('signed')->group(function () {
             Route::get('confirmar/{ticket}', [AccesoController::class, 'confirmar'])->whereNumber('ticket')->name('confirmar');
             Route::get('entrar/{cliente}', [AccesoController::class, 'entrar'])->whereNumber('cliente')->name('entrar');
+            Route::get('afectado/{ticket}/{cliente}', [AfectadoController::class, 'confirmar'])->whereNumber(['ticket', 'cliente'])->name('afectado.confirmar');
             Route::get('e/{cliente}/{ticket}', [AccesoController::class, 'enlace'])->whereNumber(['cliente', 'ticket'])->name('enlace');
         });
 

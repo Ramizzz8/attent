@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { ExternalLink, Inbox } from 'lucide-react';
+import { Building2, ExternalLink, Inbox } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -27,9 +27,14 @@ export function menuPanel(empresa: EmpresaPanel): NavItem[] {
 }
 
 function menuSector(empresa: EmpresaPanel): NavItem[] {
-    void empresa;
+    if (!empresa?.esAdmin) return [];
 
-    return [];
+    switch (empresa.sector) {
+        case 'fincas':
+            return [{ title: 'Edificios y proveedores', href: '/panel/edificios', icon: Building2 }];
+        default:
+            return [];
+    }
 }
 
 export function AppSidebar() {

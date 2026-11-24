@@ -33,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'empresa.panel' => ResolverEmpresaPanel::class,
             'empresa.portal' => ResolverEmpresaPortal::class,
             'cliente.portal' => ClientePortal::class,
+            'admin' => \App\Http\Middleware\SoloAdmin::class,
         ]);
 
         // La empresa actual debe fijarse antes de resolver los modelos de la URL,

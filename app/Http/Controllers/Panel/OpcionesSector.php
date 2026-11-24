@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Enums\SectorClave;
+use App\Models\Edificio;
 use App\Models\Empresa;
 use App\Models\Ticket;
 use App\Models\Vehiculo;
@@ -14,7 +15,12 @@ final class OpcionesSector
     /** @return array<string, mixed> */
     public static function bandeja(Empresa $empresa): array
     {
-        return [];
+        return match ($empresa->sector) {
+            SectorClave::Fincas => [
+                'edificios' => Edificio::orderBy('nombre')->get()->map(fn (Edificio $e) => ['valor' => (string) $e->id, 'etiqueta' => $e->nombre]),
+            ],
+            default => [],
+        };
     }
 
     /** @return list<string> relaciones a precargar en la bandeja */
@@ -22,6 +28,7 @@ final class OpcionesSector
     {
         return match ($empresa->sector) {
             SectorClave::Taller => ['vehiculo'],
+            SectorClave::Fincas => ['edificio', 'zona'],
             default => [],
         };
     }
@@ -42,6 +49,7 @@ final class OpcionesSector
     {
         return match ($ticket->empresa->sector) {
             SectorClave::Taller => $ticket->vehiculo?->matricula,
+            SectorClave::Fincas => trim(($ticket->edificio?->nombre ?? '').' · '.($ticket->zona?->nombre ?? ''), ' ·') ?: null,
             default => null,
         };
     }

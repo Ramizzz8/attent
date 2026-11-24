@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -66,6 +67,30 @@ class Ticket extends Model
         return $this->belongsTo(Vehiculo::class);
     }
 
+    /** @return BelongsTo<Edificio, $this> */
+    public function edificio(): BelongsTo
+    {
+        return $this->belongsTo(Edificio::class);
+    }
+
+    /** @return BelongsTo<Zona, $this> */
+    public function zona(): BelongsTo
+    {
+        return $this->belongsTo(Zona::class);
+    }
+
+    /** @return BelongsTo<Proveedor, $this> */
+    public function proveedor(): BelongsTo
+    {
+        return $this->belongsTo(Proveedor::class);
+    }
+
+    /** Vecinos que han indicado "a mí también me afecta". */
+    public function afectados(): BelongsToMany
+    {
+        return $this->belongsToMany(Cliente::class, 'ticket_afectados')->withTimestamps();
+    }
+
     /** @return HasMany<Mensaje, $this> */
     public function mensajes(): HasMany
     {
@@ -96,7 +121,7 @@ class Ticket extends Model
      */
     public function clientesAvisables(): Collection
     {
-        return collect([$this->cliente])->filter()->values();
+        return collect([$this->cliente])->merge($this->afectados()->get())->filter()->unique('id')->values();
     }
 
     public function estadoSla(): ?string
@@ -113,6 +138,18 @@ class Ticket extends Model
     public function scopeVerificados(Builder $query): void
     {
         $query->whereNotNull('verificado_en');
+    }
+
+    /**
+     * Tickets que un cliente puede ver: los que abrió y aquellos en los que está como afectado.
+     *
+     * @param  Builder<Ticket>  $query
+     */
+    public function scopeDelCliente(Builder $query, ?int $clienteId): void
+    {
+        $query->where(fn (Builder $q) => $q
+            ->where('cliente_id', $clienteId)
+            ->orWhereHas('afectados', fn (Builder $a) => $a->where('clientes.id', $clienteId)));
     }
 
     /** @param Builder<Ticket> $query */

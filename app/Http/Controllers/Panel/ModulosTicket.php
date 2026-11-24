@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Panel;
 
 use App\Enums\SectorClave;
 use App\Models\Presupuesto;
+use App\Models\Proveedor;
 use App\Models\Ticket;
 
 /** Datos de los módulos propios del sector que se muestran en el detalle del ticket del panel. */
@@ -14,8 +15,27 @@ final class ModulosTicket
     {
         return match ($ticket->empresa->sector) {
             SectorClave::Taller => self::taller($ticket),
+            SectorClave::Fincas => self::fincas($ticket),
             default => [],
         };
+    }
+
+    /** @return array<string, mixed> */
+    private static function fincas(Ticket $ticket): array
+    {
+        return [
+            'edificio' => $ticket->edificio?->nombre,
+            'zona' => $ticket->zona?->nombre,
+            'afectados' => $ticket->afectados()->count(),
+            'afectadosNombres' => $ticket->afectados()->pluck('nombre'),
+            'proveedor' => $ticket->proveedor?->only(['id', 'nombre', 'oficio', 'telefono', 'email']),
+            'visita' => $ticket->visita_programada_en?->toIso8601String(),
+            'proveedoresDisponibles' => $ticket->edificio_id
+                ? Proveedor::whereHas('edificios', fn ($q) => $q->where('edificios.id', $ticket->edificio_id))
+                    ->orderBy('nombre')->get(['id', 'nombre', 'oficio'])
+                : [],
+            'puedeAsignarProveedor' => in_array($ticket->estado, ['reportada', 'en_revision', 'asignada_proveedor', 'visita_programada'], true),
+        ];
     }
 
     /** @return array<string, mixed> */

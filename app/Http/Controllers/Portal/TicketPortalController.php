@@ -66,7 +66,7 @@ class TicketPortalController extends Controller
     public function index(Empresa $empresa): Response
     {
         $tickets = Ticket::query()
-            ->where('cliente_id', Auth::guard('cliente')->id())
+            ->delCliente(Auth::guard('cliente')->id())
             ->verificados()
             ->latest()
             ->get()
@@ -94,7 +94,7 @@ class TicketPortalController extends Controller
     {
         return Ticket::query()
             ->where('numero', $numero)
-            ->where('cliente_id', Auth::guard('cliente')->id())
+            ->delCliente(Auth::guard('cliente')->id())
             ->firstOrFail();
     }
 }
