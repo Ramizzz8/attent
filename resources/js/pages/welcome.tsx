@@ -1,55 +1,60 @@
-import { Head, Link, usePage } from '@inertiajs/react';
-import { Building2, Car, Monitor } from 'lucide-react';
-import { dashboard, login } from '@/routes';
+import { Head, usePage } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { Cabecera, Pie } from '@/components/landing/cabecera-pie';
+import { ComoFunciona } from '@/components/landing/como-funciona';
+import type { AccesoDemo, Portal } from '@/components/landing/datos';
+import { Funciones } from '@/components/landing/funciones';
+import { Portada } from '@/components/landing/portada';
+import { Probar } from '@/components/landing/probar';
+import { Sectores } from '@/components/landing/sectores';
 
-type Portal = { nombre: string; sector: string; slug: string; color: string };
+/** Entradas escalonadas al hacer scroll. Sin JavaScript (o con movimiento reducido) todo se ve desde el principio. */
+function useRevelar() {
+    useEffect(() => {
+        const raiz = document.documentElement;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+            return;
+        }
+        raiz.classList.add('con-revelar');
+        const observador = new IntersectionObserver(
+            (entradas) =>
+                entradas.forEach((e) => {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('visible');
+                        observador.unobserve(e.target);
+                    }
+                }),
+            { rootMargin: '0px 0px -8% 0px' },
+        );
+        document.querySelectorAll('.revelar').forEach((el, i) => {
+            (el as HTMLElement).style.setProperty('--retraso', `${(i % 4) * 75}ms`);
+            observador.observe(el);
+        });
 
-const ICONO: Record<string, typeof Car> = { taller: Car, fincas: Building2, soporte_it: Monitor };
+        return () => {
+            observador.disconnect();
+            raiz.classList.remove('con-revelar');
+        };
+    }, []);
+}
 
-const DESCRIPCION: Record<string, string> = {
-    taller: 'Presupuestos que el cliente aprueba desde el portal y vehículos con historial.',
-    fincas: 'Varios edificios, aviso de incidencias repetidas y proveedores externos sin cuenta.',
-    soporte_it: 'Inventario de equipos, matriz impacto × urgencia y plazos de primera respuesta.',
-};
-
-export default function Welcome({ portales = [] }: { portales?: Portal[] }) {
+export default function Welcome({ portales = [], accesosDemo = [] }: { portales?: Portal[]; accesosDemo?: AccesoDemo[] }) {
     const { auth } = usePage().props;
+    useRevelar();
 
     return (
         <>
-            <Head title="ATTENT · incidencias por sector" />
-            <div className="min-h-screen bg-background px-6 py-16 text-foreground">
-                <div className="mx-auto max-w-4xl">
-                    <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">ATTENT</h1>
-                    <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-                        Gestión de incidencias para empresas en la que cada sector funciona a su manera. Los clientes abren y siguen sus incidencias sin
-                        contraseña; el equipo las gestiona con plazos, notas internas y avisos en tiempo real.
-                    </p>
-                    <div className="mt-6 flex flex-wrap gap-3">
-                        <Link href={auth.user ? dashboard() : login()} className="rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
-                            {auth.user ? 'Ir al panel' : 'Entrar al panel del equipo'}
-                        </Link>
-                    </div>
-
-                    {portales.length > 0 && (
-                        <section className="mt-14">
-                            <h2 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">Prueba el portal de clientes</h2>
-                            <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                                {portales.map((p) => {
-                                    const Icono = ICONO[p.sector] ?? Building2;
-
-                                    return (
-                                        <a key={p.slug} href={`/${p.slug}`} className="group rounded-xl border p-5 transition hover:shadow-md">
-                                            <Icono className="h-6 w-6" style={{ color: p.color }} />
-                                            <p className="mt-3 font-semibold group-hover:underline">{p.nombre}</p>
-                                            <p className="mt-1 text-sm text-muted-foreground">{DESCRIPCION[p.sector]}</p>
-                                        </a>
-                                    );
-                                })}
-                            </div>
-                        </section>
-                    )}
-                </div>
+            <Head title="ATTENT · incidencias a la manera de tu sector" />
+            <div className="min-h-screen bg-background text-foreground">
+                <Cabecera conSesion={Boolean(auth.user)} />
+                <main>
+                    <Portada />
+                    <Sectores portales={portales} />
+                    <ComoFunciona />
+                    <Funciones />
+                    {(portales.length > 0 || accesosDemo.length > 0) && <Probar portales={portales} accesosDemo={accesosDemo} />}
+                </main>
+                <Pie />
             </div>
         </>
     );

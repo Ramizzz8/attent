@@ -102,22 +102,27 @@ export default function Login({ status, canResetPassword, cuentasDemo }: Props) 
             )}
 
             {cuentasDemo && (
-                <div className="mt-6 rounded-lg border border-dashed p-4 text-sm">
-                    <p className="font-medium">Cuentas de demostración</p>
-                    <p className="mb-2 text-muted-foreground">Contraseña de todas: <code>password</code></p>
-                    <ul className="space-y-2">
+                <div className="mt-6 rounded-xl bg-muted p-4 text-sm">
+                    <p className="font-medium">Demo: entra sin escribir nada</p>
+                    <p className="mb-3 text-muted-foreground">Cada botón abre el panel de una empresa de ejemplo.</p>
+                    <div className="grid gap-2">
                         {cuentasDemo.map((c) => (
-                            <li key={c.email}>
-                                <p className="font-mono text-xs">{c.email}</p>
-                                <p className="text-xs text-muted-foreground">
-                                    {c.empresa} ·{' '}
-                                    <a href={c.portal} className="underline">
-                                        ver portal de clientes
-                                    </a>
-                                </p>
-                            </li>
+                            <form key={c.email} method="post" action={`/demo/entrar${c.portal}`}>
+                                <input
+                                    type="hidden"
+                                    name="_token"
+                                    value={typeof document !== 'undefined' ? (document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content ?? '') : ''}
+                                />
+                                <Button type="submit" variant="outline" className="w-full justify-between">
+                                    {c.empresa}
+                                    <span aria-hidden="true">→</span>
+                                </Button>
+                            </form>
                         ))}
-                    </ul>
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                        O con email y contraseña: {cuentasDemo[0].email} · <code>password</code>
+                    </p>
                 </div>
             )}
         </>

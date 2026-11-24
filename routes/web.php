@@ -20,7 +20,13 @@ Route::get('/', fn () => Inertia\Inertia::render('welcome', [
             'nombre' => $e->nombre, 'sector' => $e->sector->value, 'slug' => $e->slug, 'color' => $e->color_primario,
         ])
         : [],
+    'accesosDemo' => App\Http\Controllers\DemoController::accesos(),
 ]))->name('home');
+
+// Demo pública: acceso de un clic al panel de una empresa de ejemplo (404 fuera de la demo).
+Route::post('demo/entrar/{empresa}', [App\Http\Controllers\DemoController::class, 'entrar'])
+    ->middleware('throttle:20,1')
+    ->name('demo.entrar');
 
 Route::middleware(['auth', 'verified', 'empresa.panel'])->group(function () {
     Route::get('panel', [BandejaController::class, 'index'])->name('dashboard');
