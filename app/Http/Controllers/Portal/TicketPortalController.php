@@ -101,6 +101,24 @@ class TicketPortalController extends Controller
         return redirect("/{$empresa->slug}/tickets/{$numero}");
     }
 
+    public function valorar(Request $request, Empresa $empresa, int $numero): RedirectResponse
+    {
+        $ticket = self::ticketDelCliente($numero);
+        abort_unless($ticket->cliente_id === Auth::guard('cliente')->id(), 404);
+
+        $datos = $request->validate([
+            'valoracion' => ['required', 'integer', 'between:1,5'],
+            'comentario' => ['nullable', 'string', 'max:500'],
+        ]);
+        if (! $ticket->puedeValorarse()) {
+            throw \Illuminate\Validation\ValidationException::withMessages(['valoracion' => 'Esta incidencia ya está valorada o todavía no se ha resuelto.']);
+        }
+
+        $ticket->update(['valoracion' => $datos['valoracion'], 'valoracion_comentario' => $datos['comentario'] ?? null]);
+
+        return redirect("/{$empresa->slug}/tickets/{$numero}")->with('status', '¡Gracias por tu valoración!');
+    }
+
     public static function ticketDelCliente(int $numero): Ticket
     {
         return Ticket::query()

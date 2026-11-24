@@ -24,6 +24,8 @@ final class VistaTicketPortal
             'categoria' => $sector->categorias()[$ticket->categoria] ?? $ticket->categoria,
             'estado' => $ticket->estado,
             'estadoEtiqueta' => $ticket->etiquetaEstado(),
+            'puedeValorar' => $ticket->puedeValorarse() && $ticket->cliente_id === \Illuminate\Support\Facades\Auth::guard('cliente')->id(),
+            'valoracion' => $ticket->valoracion,
             'puedeReabrir' => ReabrirTicket::puede($ticket) && $ticket->cliente_id === \Illuminate\Support\Facades\Auth::guard('cliente')->id(),
             'datos' => $ticket->datos ?? [],
             'creado' => $ticket->created_at->toIso8601String(),

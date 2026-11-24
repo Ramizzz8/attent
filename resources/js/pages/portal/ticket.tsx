@@ -3,6 +3,7 @@ import { Conversacion, ListaAdjuntos } from '@/components/conversacion';
 import type { AdjuntoResumen, MensajeVista } from '@/components/conversacion';
 import { EstadoPill, fecha } from '@/components/portal/estado-pill';
 import { Reabrir } from '@/components/portal/reabrir';
+import { Estrellas, Valorar } from '@/components/portal/valorar';
 import { PresupuestoPortal } from '@/components/sectores/taller/presupuesto-portal';
 import type { PresupuestoVista } from '@/components/sectores/taller/presupuesto';
 import { usePortalUrl } from '@/hooks/use-portal';
@@ -16,6 +17,8 @@ export type TicketPortal = {
     estado: string;
     estadoEtiqueta: string;
     puedeReabrir: boolean;
+    puedeValorar: boolean;
+    valoracion: number | null;
     datos: Record<string, string | number>;
     creado: string;
     historial: { estado: string; fecha: string }[];
@@ -55,6 +58,12 @@ export default function Ticket({ ticket }: { ticket: TicketPortal }) {
                     <ListaAdjuntos adjuntos={ticket.adjuntos} urlBase={url('adjuntos')} />
                 </section>
 
+                {ticket.puedeValorar && <Valorar numero={ticket.numero} />}
+                {ticket.valoracion && (
+                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                        Tu valoración: <Estrellas nota={ticket.valoracion} />
+                    </p>
+                )}
                 {ticket.puedeReabrir && <Reabrir numero={ticket.numero} />}
 
                 {ticket.presupuesto && <PresupuestoPortal numero={ticket.numero} presupuesto={ticket.presupuesto} />}

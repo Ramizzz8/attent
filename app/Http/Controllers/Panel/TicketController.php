@@ -40,6 +40,8 @@ class TicketController extends Controller
                 'primeraRespuesta' => $ticket->primera_respuesta_en?->toIso8601String(),
                 'cliente' => $ticket->cliente->only(['nombre', 'email', 'telefono']),
                 'asignadoId' => $ticket->asignado_a,
+                'valoracion' => $ticket->valoracion,
+                'valoracionComentario' => $ticket->valoracion_comentario,
                 'adjuntos' => $ticket->adjuntos()->whereNull('mensaje_id')->get()->map(fn (Adjunto $a) => $a->resumen()),
                 'mensajes' => $ticket->mensajes()->with(['adjuntos', 'autor'])->orderBy('id')->get()->map(fn (Mensaje $m) => [
                     'id' => $m->id,

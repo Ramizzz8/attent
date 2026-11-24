@@ -130,6 +130,15 @@ class Ticket extends Model
         return collect([$this->cliente])->merge($this->afectados()->get())->filter()->unique('id')->values();
     }
 
+    /** Se valora una sola vez, cuando la incidencia ya está resuelta o cerrada (no descartada). */
+    public function puedeValorarse(): bool
+    {
+        $sector = $this->sector();
+
+        return $this->valoracion === null
+            && in_array($this->estado, array_filter([$sector->estadoResuelto(), $sector->estadoCerrado()]), true);
+    }
+
     public function estadoSla(): ?string
     {
         return app(Sla::class)->estado($this);

@@ -8,6 +8,7 @@ import { ModulosSector } from '@/components/panel/modulos-sector';
 import { EstadoBadge, PrioridadBadge, relativo, SlaBadge } from '@/components/panel/insignias';
 import { claseSelect } from '@/components/portal/campo';
 import { fecha } from '@/components/portal/estado-pill';
+import { Estrellas } from '@/components/portal/valorar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAvisosPanel } from '@/hooks/use-avisos-panel';
@@ -31,6 +32,8 @@ export type TicketPanel = {
     primeraRespuesta: string | null;
     cliente: { nombre: string; email: string; telefono: string | null };
     asignadoId: number | null;
+    valoracion: number | null;
+    valoracionComentario: string | null;
     adjuntos: AdjuntoResumen[];
     mensajes: MensajeVista[];
     historial: { id: number; tipo: string; de: string | null; a: string | null; motivo: string | null; datos: Record<string, unknown> | null; actor: string; fecha: string }[];
@@ -201,6 +204,13 @@ export default function TicketPanelPage({ ticket, destinos, empleados }: { ticke
                             )}
                         </div>
                     </Tarjeta>
+
+                    {ticket.valoracion && (
+                        <Tarjeta titulo="Valoración del cliente">
+                            <Estrellas nota={ticket.valoracion} />
+                            {ticket.valoracionComentario && <p className="mt-2 text-sm italic">«{ticket.valoracionComentario}»</p>}
+                        </Tarjeta>
+                    )}
 
                     <Tarjeta titulo="Cliente">
                         <p className="text-sm font-medium">{ticket.cliente.nombre}</p>
