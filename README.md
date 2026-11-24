@@ -1,5 +1,7 @@
 # Atiende
 
+**Demo en vivo: [atiende.andresrami.com](https://atiende.andresrami.com)** (los datos se reinician cada noche; en la demo los enlaces mágicos aparecen en pantalla en lugar de enviarse por email).
+
 Plataforma de incidencias **multiempresa y especializada por sector**. Los clientes de cada negocio abren incidencias desde un portal propio de la empresa (sin contraseña, con enlaces mágicos por email) y el equipo las gestiona desde un panel interno.
 
 Lo que la diferencia de un gestor de tickets genérico es que **el sector cambia el comportamiento**:
@@ -14,7 +16,7 @@ Común a todos: estados y transiciones fijados por sector, plazos de resolución
 
 ## Tecnologías
 
-Laravel 13 · Inertia 3 · React 19 + TypeScript · Tailwind + shadcn/ui · Pest · SQLite (local) / PostgreSQL (producción).
+Laravel 13 · Inertia 3 · React 19 + TypeScript · Tailwind + shadcn/ui · Laravel Reverb (WebSockets) · Pest · SQLite · Docker (FrankenPHP).
 
 ## Puesta en marcha (Windows con Laravel Herd)
 
