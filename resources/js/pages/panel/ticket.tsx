@@ -61,6 +61,8 @@ function describirEvento(e: TicketPanel['historial'][number]): string {
             return `Prioridad: ${e.datos?.de ?? ''} → ${e.datos?.a ?? ''}`;
         case 'reabierto':
             return 'Reabierta por el cliente';
+        case 'proveedor':
+            return `Asignada al proveedor ${e.datos?.proveedor ?? ''}`;
         default:
             return e.tipo;
     }
