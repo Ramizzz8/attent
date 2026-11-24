@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Panel\AdminController;
 use App\Http\Controllers\Panel\AsignacionController;
 use App\Http\Controllers\Panel\BandejaController;
 use App\Http\Controllers\Panel\EstadoController;
@@ -29,6 +30,12 @@ Route::middleware(['auth', 'verified', 'empresa.panel'])->group(function () {
         Route::get('equipos/{equipo}', [SoporteItController::class, 'show'])->whereNumber('equipo')->name('equipos.show');
 
         Route::middleware('admin')->group(function () {
+            Route::get('empleados', [AdminController::class, 'empleados'])->name('empleados.index');
+            Route::post('empleados', [AdminController::class, 'crearEmpleado'])->name('empleados.store');
+            Route::patch('empleados/{empleado}', [AdminController::class, 'cambiarRol'])->whereNumber('empleado')->name('empleados.update');
+            Route::delete('empleados/{empleado}', [AdminController::class, 'eliminarEmpleado'])->whereNumber('empleado')->name('empleados.destroy');
+            Route::get('ajustes', [AdminController::class, 'ajustes'])->name('ajustes.edit');
+            Route::post('ajustes', [AdminController::class, 'guardarAjustes'])->name('ajustes.update');
             Route::post('equipos', [SoporteItController::class, 'store'])->name('equipos.store');
             Route::get('edificios', [FincasController::class, 'index'])->name('edificios.index');
             Route::post('edificios', [FincasController::class, 'storeEdificio'])->name('edificios.store');

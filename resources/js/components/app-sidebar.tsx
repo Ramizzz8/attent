@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Building2, ExternalLink, Inbox, Monitor } from 'lucide-react';
+import { Building2, ExternalLink, Inbox, Monitor, Settings, Users } from 'lucide-react';
 import { usePage } from '@inertiajs/react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -22,8 +22,14 @@ type EmpresaPanel = { nombre: string; slug: string; color: string; sector: strin
 /** Menú del panel. Los módulos de cada sector y de administración se añaden según la empresa. */
 export function menuPanel(empresa: EmpresaPanel): NavItem[] {
     const items: NavItem[] = [{ title: 'Bandeja', href: dashboard(), icon: Inbox }];
+    const admin: NavItem[] = empresa?.esAdmin
+        ? [
+              { title: 'Empleados', href: '/panel/empleados', icon: Users },
+              { title: 'Ajustes', href: '/panel/ajustes', icon: Settings },
+          ]
+        : [];
 
-    return [...items, ...menuSector(empresa)];
+    return [...items, ...menuSector(empresa), ...admin];
 }
 
 function menuSector(empresa: EmpresaPanel): NavItem[] {
