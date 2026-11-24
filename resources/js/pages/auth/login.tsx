@@ -14,9 +14,10 @@ import PasskeyVerify from '@/components/passkey-verify';
 type Props = {
     status?: string;
     canResetPassword: boolean;
+    cuentasDemo?: { empresa: string; email: string; portal: string }[] | null;
 };
 
-export default function Login({ status, canResetPassword }: Props) {
+export default function Login({ status, canResetPassword, cuentasDemo }: Props) {
     return (
         <>
             <Head title="Entrar" />
@@ -97,6 +98,26 @@ export default function Login({ status, canResetPassword }: Props) {
             {status && (
                 <div className="mb-4 text-center text-sm font-medium text-green-600">
                     {status}
+                </div>
+            )}
+
+            {cuentasDemo && (
+                <div className="mt-6 rounded-lg border border-dashed p-4 text-sm">
+                    <p className="font-medium">Cuentas de demostración</p>
+                    <p className="mb-2 text-muted-foreground">Contraseña de todas: <code>password</code></p>
+                    <ul className="space-y-2">
+                        {cuentasDemo.map((c) => (
+                            <li key={c.email}>
+                                <p className="font-mono text-xs">{c.email}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    {c.empresa} ·{' '}
+                                    <a href={c.portal} className="underline">
+                                        ver portal de clientes
+                                    </a>
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
         </>

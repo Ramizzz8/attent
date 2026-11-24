@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Notifications\EnlaceAcceso;
+use App\Portal\EnlacesPortal;
 use App\Tickets\CrearTicket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class AccesoController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('portal/acceder', ['status' => session('status')]);
+        return Inertia::render('portal/acceder', ['status' => session('status'), 'enlaceDemo' => session('enlaceDemo')]);
     }
 
     /** Envía el enlace mágico. Responde igual exista o no el email, para no revelar quién es cliente. */
@@ -28,9 +29,12 @@ class AccesoController extends Controller
     {
         $email = mb_strtolower($request->validate(['email' => ['required', 'email']])['email']);
 
-        Cliente::where('email', $email)->first()?->notify(new EnlaceAcceso);
+        $cliente = Cliente::where('email', $email)->first();
+        $cliente?->notify(new EnlaceAcceso);
 
-        return redirect("/{$empresa->slug}/acceder")->with('status', self::MENSAJE_ENVIADO);
+        return redirect("/{$empresa->slug}/acceder")
+            ->with('status', self::MENSAJE_ENVIADO)
+            ->with('enlaceDemo', config('atiende.demo') && $cliente ? EnlacesPortal::entrar($cliente) : null);
     }
 
     public function entrar(Request $request, Empresa $empresa, int $cliente): RedirectResponse

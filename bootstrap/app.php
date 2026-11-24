@@ -30,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        // En producción va detrás de Caddy (red interna de Docker): respetar X-Forwarded-Proto/Host.
+        $middleware->trustProxies(at: ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.1']);
+
         $middleware->alias([
             'empresa.panel' => ResolverEmpresaPanel::class,
             'empresa.portal' => ResolverEmpresaPortal::class,

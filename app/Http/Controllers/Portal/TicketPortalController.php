@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Ticket;
 use App\Notifications\ConfirmarTicket;
+use App\Portal\EnlacesPortal;
 use App\Tickets\Adjuntos;
 use App\Tickets\CrearTicket;
 use App\Tickets\ReabrirTicket;
@@ -58,7 +59,8 @@ class TicketPortalController extends Controller
         if ($ticket->verificado_en === null) {
             $cliente->notify(new ConfirmarTicket($ticket));
 
-            return redirect("/{$empresa->slug}/pendiente");
+            return redirect("/{$empresa->slug}/pendiente")
+                ->with('enlaceDemo', config('atiende.demo') ? EnlacesPortal::confirmar($ticket) : null);
         }
 
         return redirect("/{$empresa->slug}/tickets/{$ticket->numero}");

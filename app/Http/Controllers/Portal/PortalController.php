@@ -16,6 +16,6 @@ class PortalController extends Controller
 
     public function pendiente(Empresa $empresa): Response
     {
-        return Inertia::render('portal/pendiente');
+        return Inertia::render('portal/pendiente', ['enlaceDemo' => session('enlaceDemo')]);
     }
 }

@@ -1,7 +1,8 @@
 import { Head } from '@inertiajs/react';
 import { MailCheck } from 'lucide-react';
+import { AvisoDemo } from '@/components/portal/aviso-demo';
 
-export default function Pendiente() {
+export default function Pendiente({ enlaceDemo }: { enlaceDemo?: string | null }) {
     return (
         <>
             <Head title="Revisa tu email" />
@@ -12,6 +13,7 @@ export default function Pendiente() {
                     Te hemos enviado un enlace para confirmar tu incidencia. En cuanto lo pulses, llegará a nuestro equipo y podrás seguirla
                     desde aquí. El enlace caduca en 24 horas.
                 </p>
+                <AvisoDemo enlace={enlaceDemo} texto="Confirmar (enlace del email)" />
             </section>
         </>
     );

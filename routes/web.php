@@ -13,7 +13,14 @@ use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Proveedor\ProveedorTicketController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', fn () => Inertia\Inertia::render('welcome', [
+    // En la demo pública se enseñan las empresas de ejemplo; en una instalación real, no.
+    'portales' => config('atiende.demo')
+        ? App\Models\Empresa::orderBy('id')->get()->map(fn ($e) => [
+            'nombre' => $e->nombre, 'sector' => $e->sector->value, 'slug' => $e->slug, 'color' => $e->color_primario,
+        ])
+        : [],
+]))->name('home');
 
 Route::middleware(['auth', 'verified', 'empresa.panel'])->group(function () {
     Route::get('panel', [BandejaController::class, 'index'])->name('dashboard');
