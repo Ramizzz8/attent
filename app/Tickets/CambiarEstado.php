@@ -19,11 +19,12 @@ class CambiarEstado
 
     public function ejecutar(Ticket $ticket, string $destino, User|Cliente|null $actor, ?string $motivo = null, bool $sistema = false): Ticket
     {
-        $actualizado = DB::transaction(function () use ($ticket, $destino, $actor, $motivo, $sistema) {
+        $origenAntes = null;
+        $actualizado = DB::transaction(function () use ($ticket, $destino, $actor, $motivo, $sistema, &$origenAntes) {
             // Se recarga bloqueado: si otro empleado lo cambió entretanto, se valida contra el estado real.
             $t = Ticket::withoutGlobalScopes()->whereKey($ticket->id)->lockForUpdate()->firstOrFail();
             $sector = $t->sector();
-            $origen = $t->estado;
+            $origen = $origenAntes = $t->estado;
             $motivo = filled($motivo) ? trim($motivo) : null;
 
             if (! array_key_exists($destino, $sector->estados())) {
@@ -67,7 +68,7 @@ class CambiarEstado
             return $t;
         });
 
-        TicketEstadoCambiado::dispatch($actualizado, $sistema);
+        TicketEstadoCambiado::dispatch($actualizado, $sistema, $actor, $origenAntes);
 
         return $actualizado;
     }

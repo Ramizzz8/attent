@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Ticket extends Model
 {
@@ -80,6 +81,16 @@ class Ticket extends Model
     public function presupuestoVigente(): ?Presupuesto
     {
         return $this->presupuestos()->orderByDesc('version')->first();
+    }
+
+    /**
+     * Clientes que reciben los avisos del ticket (el que lo abrió y, en fincas, los vecinos afectados).
+     *
+     * @return Collection<int, Cliente>
+     */
+    public function clientesAvisables(): Collection
+    {
+        return collect([$this->cliente])->filter()->values();
     }
 
     public function estadoSla(): ?string
