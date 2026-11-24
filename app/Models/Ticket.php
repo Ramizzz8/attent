@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Prioridad;
 use App\Sectores\Sector;
 use App\Tenancy\PerteneceAEmpresa;
+use App\Tickets\Sla;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +27,7 @@ class Ticket extends Model
             'sla_vence_en' => 'datetime',
             'sla_pausado_en' => 'datetime',
             'sla_cumplido' => 'boolean',
+            'sla_pausa_segundos' => 'integer',
             'primera_respuesta_vence_en' => 'datetime',
             'primera_respuesta_en' => 'datetime',
             'visita_programada_en' => 'datetime',
@@ -68,9 +70,25 @@ class Ticket extends Model
         return $this->presupuestos()->orderByDesc('version')->first();
     }
 
+    public function estadoSla(): ?string
+    {
+        return app(Sla::class)->estado($this);
+    }
+
+    public function etiquetaEstado(): string
+    {
+        return $this->sector()->estados()[$this->estado] ?? $this->estado;
+    }
+
     /** @param Builder<Ticket> $query */
     public function scopeVerificados(Builder $query): void
     {
         $query->whereNotNull('verificado_en');
+    }
+
+    /** @param Builder<Ticket> $query */
+    public function scopeAbiertos(Builder $query, Sector $sector): void
+    {
+        $query->whereNotIn('estado', $sector->estadosTerminados());
     }
 }

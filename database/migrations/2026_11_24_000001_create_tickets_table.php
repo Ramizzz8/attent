@@ -31,6 +31,7 @@ return new class extends Migration
             $table->timestamp('verificado_en')->nullable();
             $table->timestamp('sla_vence_en')->nullable();
             $table->timestamp('sla_pausado_en')->nullable();
+            $table->unsignedInteger('sla_pausa_segundos')->default(0);
             $table->boolean('sla_cumplido')->nullable();
             $table->timestamp('primera_respuesta_vence_en')->nullable();
             $table->timestamp('primera_respuesta_en')->nullable();
