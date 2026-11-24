@@ -6,6 +6,7 @@ use App\Enums\Prioridad;
 use App\Models\Cliente;
 use App\Models\Ticket;
 use App\Tickets\Sla;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -27,7 +28,11 @@ class SumarAfectado
         }
 
         DB::transaction(function () use ($ticket, $cliente) {
-            $ticket->afectados()->syncWithoutDetaching([$cliente->id]);
+            try {
+                $ticket->afectados()->syncWithoutDetaching([$cliente->id]);
+            } catch (UniqueConstraintViolationException) {
+                return; // doble clic simultáneo: el otro ya lo ha sumado
+            }
             $this->recalcularPrioridad($ticket->fresh());
         });
     }

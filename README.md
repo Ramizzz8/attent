@@ -29,6 +29,8 @@ npm run build                      # o "composer run dev" para desarrollo
 php artisan serve --port=8010
 ```
 
+Para subir fotos de hasta 5 MB, sube en el `php.ini` de Herd `upload_max_filesize = 6M` y `post_max_size = 30M` (por defecto PHP solo admite 2 MB por archivo; la aplicación avisa con un mensaje claro si se superan).
+
 En `.env`, `APP_URL` debe coincidir con la URL desde la que se abre la aplicación (los enlaces mágicos van firmados con ella). Los emails se escriben en `storage/logs/laravel.log` (`MAIL_MAILER=log`) y se envían en cola: `php artisan queue:work`.
 
 ## Datos de demostración

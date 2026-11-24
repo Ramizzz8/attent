@@ -65,6 +65,9 @@ class ProveedorTicketController extends Controller
     {
         [$t, $p] = $this->cargar($proveedor, $ticket);
         $datos = $request->validate(['comentario' => ['required', 'string', 'max:2000'], ...Adjuntos::reglas()]);
+        if (! in_array($t->estado, ['asignada_proveedor', 'visita_programada'], true)) {
+            throw ValidationException::withMessages(['comentario' => 'Esta incidencia ya está '.mb_strtolower($t->etiquetaEstado()).'.']);
+        }
 
         $enviar->ejecutar($t, $p, $datos['comentario'], $datos['adjuntos'] ?? []);
         $this->cambiar($cambiarEstado, $t, 'resuelta');

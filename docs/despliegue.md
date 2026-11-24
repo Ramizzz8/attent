@@ -13,6 +13,17 @@ sudo apt install php8.4-fpm php8.4-cli php8.4-pgsql php8.4-mbstring php8.4-xml p
 # Composer y Node 24 si no están ya instalados
 ```
 
+### Límites de subida de PHP
+
+Los adjuntos admiten hasta 5 archivos de 5 MB. Los valores por defecto de PHP (2 MB / 8 MB) se quedan cortos. En `/etc/php/8.4/fpm/conf.d/99-atiende.ini`:
+
+```ini
+upload_max_filesize = 6M
+post_max_size = 30M
+```
+
+`sudo systemctl restart php8.4-fpm`
+
 ## 3. Base de datos
 
 ```bash

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Portal;
 
+use App\Enums\SectorClave;
 use App\Fincas\BuscarDuplicado;
 use App\Fincas\SumarAfectado;
 use App\Http\Controllers\Controller;
@@ -53,7 +54,7 @@ class AfectadoController extends Controller
 
     public function store(Request $request, Empresa $empresa, int $numero, SumarAfectado $sumar): RedirectResponse
     {
-        $ticket = Ticket::verificados()->where('numero', $numero)->firstOrFail();
+        $ticket = $this->incidenciaAbiertaDeFincas($empresa, Ticket::verificados()->where('numero', $numero));
         /** @var Cliente|null $cliente */
         $cliente = Auth::guard('cliente')->user();
 
@@ -73,9 +74,20 @@ class AfectadoController extends Controller
         return redirect("/{$empresa->slug}/pendiente");
     }
 
+    /**
+     * "A mí también me afecta" solo existe en el administrador de fincas y solo para incidencias
+     * abiertas: si no, cualquiera podría sumarse a un ticket ajeno y leerlo.
+     */
+    private function incidenciaAbiertaDeFincas(Empresa $empresa, $consulta): Ticket
+    {
+        abort_unless($empresa->sector === SectorClave::Fincas, 404);
+
+        return $consulta->verificados()->abiertos($empresa->motor())->firstOrFail();
+    }
+
     public function confirmar(Request $request, Empresa $empresa, int $ticket, int $cliente, SumarAfectado $sumar): RedirectResponse
     {
-        $t = Ticket::findOrFail($ticket);
+        $t = $this->incidenciaAbiertaDeFincas($empresa, Ticket::whereKey($ticket));
         $c = Cliente::findOrFail($cliente);
 
         $sumar->ejecutar($t, $c);

@@ -42,13 +42,24 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolverEmpresaPortal::class);
         $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolverEmpresaPanel::class);
 
+        // El límite de tamaño se comprueba con la sesión ya abierta, para poder volver al formulario con el error.
+        $middleware->remove(\Illuminate\Http\Middleware\ValidatePostSize::class);
+
         $middleware->web(append: [
+            \Illuminate\Http\Middleware\ValidatePostSize::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Envío mayor que post_max_size: vuelve al formulario con un error en vez de un 413 en bruto.
+        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, Request $request) {
+            if (! $request->expectsJson()) {
+                return back()->withErrors(['adjuntos' => 'Los archivos son demasiado grandes en total. Envía menos fotos o más ligeras (máximo 5 MB cada una).']);
+            }
+        });
+
         // Enlace mágico caducado o manipulado: página amable en lugar de un 403.
         $exceptions->render(function (InvalidSignatureException $e, Request $request) {
             $empresa = Empresa::where('slug', $request->segment(1))->first();

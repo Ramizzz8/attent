@@ -158,7 +158,17 @@ return [
     'uppercase'              => 'El campo :attribute debe estar en mayúscula.',
     'url'                    => 'El campo :attribute debe ser una URL válida.',
     'uuid'                   => 'El campo :attribute debe ser un UUID válido.',
+    'custom' => [
+        'adjuntos.*' => [
+            'uploaded' => 'El archivo es demasiado grande. El máximo son 5 MB por archivo.',
+            'max' => 'El archivo es demasiado grande. El máximo son 5 MB por archivo.',
+            'mimes' => 'Solo se admiten imágenes JPG, PNG o WEBP y documentos PDF.',
+        ],
+    ],
+
     'attributes'             => [
+        'adjuntos' => 'archivos adjuntos',
+        'adjuntos.*' => 'archivo adjunto',
         'address'                  => 'dirección',
         'affiliate_url'            => 'URL de afiliado',
         'age'                      => 'edad',

@@ -50,6 +50,12 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
+        if ($user->esAdmin() && \App\Models\User::where('empresa_id', $user->empresa_id)->where('rol', \App\Enums\Rol::Admin)->count() === 1) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'password' => 'Eres el único administrador de la empresa. Nombra a otro administrador antes de eliminar tu cuenta.',
+            ]);
+        }
+
         Auth::logout();
 
         $user->delete();
