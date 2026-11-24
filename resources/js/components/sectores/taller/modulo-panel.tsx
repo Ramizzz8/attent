@@ -127,7 +127,7 @@ export function ModuloTallerPanel({ numero, vehiculo, presupuestos, puedePresupu
                 {presupuestos.length === 0 && !puedePresupuestar && <p className="text-sm text-muted-foreground">Pasa el ticket a «En diagnóstico» para preparar el presupuesto.</p>}
                 {puedePresupuestar && <EditorPresupuesto numero={numero} />}
                 {presupuestos.map((p) => (
-                    <TablaPresupuesto key={p.id} p={p} />
+                    <TablaPresupuesto key={p.id} p={p} urlPdf={`/panel/tickets/${numero}/presupuestos/${p.version}/pdf`} />
                 ))}
             </section>
         </>

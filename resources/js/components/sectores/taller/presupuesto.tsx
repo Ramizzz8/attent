@@ -20,12 +20,17 @@ export const euros = (n: number) => n.toLocaleString('es-ES', { style: 'currency
 const ESTADO: Record<string, string> = { pendiente: 'Pendiente de respuesta', aprobado: 'Aprobado', rechazado: 'Rechazado' };
 
 /** Tabla de un presupuesto con totales (la usan el panel y el portal). */
-export function TablaPresupuesto({ p }: { p: PresupuestoVista }) {
+export function TablaPresupuesto({ p, urlPdf }: { p: PresupuestoVista; urlPdf?: string }) {
     return (
         <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
+            <p className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
                 Versión {p.version} · {ESTADO[p.estado]}
                 {p.comentario && <span className="italic"> · «{p.comentario}»</span>}
+                {urlPdf && (
+                    <a href={urlPdf} className="ml-auto underline">
+                        Descargar PDF
+                    </a>
+                )}
             </p>
             <table className="w-full text-sm">
                 <thead className="text-left text-xs text-muted-foreground">

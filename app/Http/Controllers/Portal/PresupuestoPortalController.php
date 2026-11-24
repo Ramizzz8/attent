@@ -12,6 +12,11 @@ use Illuminate\Validation\ValidationException;
 
 class PresupuestoPortalController extends Controller
 {
+    public function pdf(Empresa $empresa, int $numero, int $version): \Symfony\Component\HttpFoundation\Response
+    {
+        return \App\Taller\PdfPresupuesto::descargar(TicketPortalController::ticketDelCliente($numero), $version);
+    }
+
     public function store(Request $request, Empresa $empresa, int $numero, ResponderPresupuesto $responder): RedirectResponse
     {
         $ticket = TicketPortalController::ticketDelCliente($numero);

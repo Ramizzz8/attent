@@ -19,7 +19,7 @@ export function PresupuestoPortal({ numero, presupuesto }: { numero: number; pre
     return (
         <section className="space-y-4 rounded-xl border-2 bg-background p-6 shadow-sm" style={{ borderColor: presupuesto.puedeResponder ? 'var(--marca)' : undefined }}>
             <h2 className="font-semibold">Presupuesto de la reparación</h2>
-            <TablaPresupuesto p={presupuesto} />
+            <TablaPresupuesto p={presupuesto} urlPdf={url(`tickets/${numero}/presupuesto/${presupuesto.version}/pdf`)} />
             {presupuesto.puedeResponder && (
                 <div className="space-y-3 border-t pt-4">
                     <p className="text-sm">No empezaremos la reparación hasta que lo apruebes.</p>

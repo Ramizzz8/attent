@@ -45,6 +45,7 @@ Route::prefix('{empresa}')
             Route::post('tickets/{numero}/mensajes', [MensajePortalController::class, 'store'])->whereNumber('numero')->middleware('throttle:20,1')->name('mensajes.store');
             Route::post('tickets/{numero}/valoracion', [TicketPortalController::class, 'valorar'])->whereNumber('numero')->name('tickets.valorar');
             Route::post('tickets/{numero}/reabrir', [TicketPortalController::class, 'reabrir'])->whereNumber('numero')->name('tickets.reabrir');
+            Route::get('tickets/{numero}/presupuesto/{version}/pdf', [PresupuestoPortalController::class, 'pdf'])->whereNumber(['numero', 'version'])->name('presupuesto.pdf');
             Route::post('tickets/{numero}/presupuesto', [PresupuestoPortalController::class, 'store'])->whereNumber('numero')->name('presupuesto.responder');
             Route::get('adjuntos/{adjunto}', [MensajePortalController::class, 'adjunto'])->whereNumber('adjunto')->name('adjuntos.show');
             Route::get('cuenta', [AccesoController::class, 'cuenta'])->name('cuenta');

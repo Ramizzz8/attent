@@ -23,6 +23,7 @@ Route::middleware(['auth', 'verified', 'empresa.panel'])->group(function () {
         Route::post('tickets/{numero}/estado', [EstadoController::class, 'store'])->whereNumber('numero')->name('tickets.estado');
         Route::post('tickets/{numero}/asignar', [AsignacionController::class, 'store'])->whereNumber('numero')->name('tickets.asignar');
         Route::post('tickets/{numero}/mensajes', [MensajeController::class, 'store'])->whereNumber('numero')->name('mensajes.store');
+        Route::get('tickets/{numero}/presupuestos/{version}/pdf', [PresupuestoController::class, 'pdf'])->whereNumber(['numero', 'version'])->name('presupuestos.pdf');
         Route::post('tickets/{numero}/presupuestos', [PresupuestoController::class, 'store'])->whereNumber('numero')->name('presupuestos.store');
         Route::post('tickets/{numero}/proveedor', [FincasController::class, 'asignar'])->whereNumber('numero')->name('tickets.proveedor');
 

@@ -72,13 +72,15 @@ it('filtra por SLA vencido y en riesgo', function () {
 });
 
 it('busca por número, asunto y email del cliente', function () {
-    $c = Cliente::factory()->for($this->empresa)->create(['email' => 'marta@cole.es']);
-    ticketDe($this->empresa, ['numero' => 10, 'asunto' => 'Proyector del aula 3']);
-    ticketDe($this->empresa, ['numero' => 11, 'cliente_id' => $c->id]);
-    ticketDe($this->empresa, ['numero' => 12]);
+    // Datos fijos: con nombres o emails aleatorios la búsqueda podría coincidir por casualidad.
+    $c = Cliente::factory()->for($this->empresa)->create(['nombre' => 'Marta', 'email' => 'zzmarta@cole.es']);
+    $otro = Cliente::factory()->for($this->empresa)->create(['nombre' => 'Pedro', 'email' => 'pedro@cole.es']);
+    ticketDe($this->empresa, ['numero' => 10, 'asunto' => 'Proyector del aula 3', 'cliente_id' => $otro->id]);
+    ticketDe($this->empresa, ['numero' => 11, 'asunto' => 'Teclado roto', 'cliente_id' => $c->id]);
+    ticketDe($this->empresa, ['numero' => 12, 'asunto' => 'Sin red', 'cliente_id' => $otro->id]);
 
     expect(numerosBandeja($this, '?q=proyector'))->toBe([10])
-        ->and(numerosBandeja($this, '?q=marta@'))->toBe([11])
+        ->and(numerosBandeja($this, '?q=zzmarta@'))->toBe([11])
         ->and(numerosBandeja($this, '?q=12'))->toBe([12]);
 });
 
