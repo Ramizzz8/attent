@@ -17,10 +17,10 @@ export default function Welcome({ portales = [] }: { portales?: Portal[] }) {
 
     return (
         <>
-            <Head title="Atiende · incidencias por sector" />
+            <Head title="ATTENT · incidencias por sector" />
             <div className="min-h-screen bg-background px-6 py-16 text-foreground">
                 <div className="mx-auto max-w-4xl">
-                    <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Atiende</h1>
+                    <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">ATTENT</h1>
                     <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
                         Gestión de incidencias para empresas en la que cada sector funciona a su manera. Los clientes abren y siguen sus incidencias sin
                         contraseña; el equipo las gestiona con plazos, notas internas y avisos en tiempo real.

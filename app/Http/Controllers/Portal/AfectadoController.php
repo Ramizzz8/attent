@@ -71,7 +71,7 @@ class AfectadoController extends Controller
         $cliente = Cliente::firstOrCreate(['email' => mb_strtolower($datos['email'])], ['nombre' => $datos['nombre']]);
         $cliente->notify(new ConfirmarAfectado($ticket));
 
-        return redirect("/{$empresa->slug}/pendiente")->with('enlaceDemo', config('atiende.demo')
+        return redirect("/{$empresa->slug}/pendiente")->with('enlaceDemo', config('attent.demo')
             ? \Illuminate\Support\Facades\URL::temporarySignedRoute('portal.afectado.confirmar', now()->addDay(), [
                 'empresa' => $empresa->slug, 'ticket' => $ticket->id, 'cliente' => $cliente->id,
             ])

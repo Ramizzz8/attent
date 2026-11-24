@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('{empresa}')
-    ->where(['empresa' => '(?!(?:'.implode('|', config('atiende.slugs_reservados')).')$)[a-z0-9][a-z0-9-]*'])
+    ->where(['empresa' => '(?!(?:'.implode('|', config('attent.slugs_reservados')).')$)[a-z0-9][a-z0-9-]*'])
     ->middleware('empresa.portal')
     ->name('portal.')
     ->group(function () {

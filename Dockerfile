@@ -1,4 +1,4 @@
-# Atiende en un solo contenedor con FrankenPHP (servidor web + PHP).
+# ATTENT en un solo contenedor con FrankenPHP (servidor web + PHP).
 # El mismo contenedor sirve también para la cola, Reverb y las tareas programadas
 # (ver docker-compose del despliegue): solo cambia el comando.
 
@@ -13,7 +13,7 @@ RUN composer dump-autoload --optimize --no-dev
 # 2) Base con las extensiones que usa la aplicación
 FROM dunglas/frankenphp:1-php8.4-bookworm AS base
 RUN install-php-extensions pdo_sqlite gd intl zip bcmath pcntl opcache
-COPY docker/php.ini $PHP_INI_DIR/conf.d/zz-atiende.ini
+COPY docker/php.ini $PHP_INI_DIR/conf.d/zz-attent.ini
 WORKDIR /app
 
 # 3) Frontend: Vite necesita PHP para generar las rutas tipadas (Wayfinder)
@@ -23,7 +23,7 @@ COPY --from=node:24-bookworm-slim /usr/local/lib/node_modules /usr/local/lib/nod
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 COPY --from=vendor /app /app
 # Datos públicos de Reverb para el navegador: se fijan al compilar.
-ARG VITE_APP_NAME=Atiende
+ARG VITE_APP_NAME=ATTENT
 ARG VITE_REVERB_APP_KEY
 ARG VITE_REVERB_HOST
 ARG VITE_REVERB_PORT=443
@@ -37,8 +37,8 @@ RUN npm ci --no-audit --no-fund \
 FROM base
 COPY --from=vendor /app /app
 COPY --from=assets /app/public/build /app/public/build
-COPY docker/entrypoint.sh /usr/local/bin/atiende-entrypoint
-RUN chmod +x /usr/local/bin/atiende-entrypoint && rm -f /app/public/hot
+COPY docker/entrypoint.sh /usr/local/bin/attent-entrypoint
+RUN chmod +x /usr/local/bin/attent-entrypoint && rm -f /app/public/hot
 
 ENV APP_ENV=production \
     APP_DEBUG=false \
@@ -49,5 +49,5 @@ ENV APP_ENV=production \
     DB_BUSY_TIMEOUT=5000
 
 EXPOSE 80
-ENTRYPOINT ["atiende-entrypoint"]
+ENTRYPOINT ["attent-entrypoint"]
 CMD ["frankenphp", "php-server", "--root", "/app/public", "--listen", ":80"]

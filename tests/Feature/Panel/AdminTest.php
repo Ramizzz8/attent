@@ -72,12 +72,12 @@ it('guarda los ajustes del portal con logo', function () {
     Storage::fake('public');
 
     $this->actingAs($this->admin)->post('/panel/ajustes', [
-        'nombre' => 'IES Atiende', 'color_primario' => '#0f766e', 'texto_portal' => 'Soporte TIC del instituto',
+        'nombre' => 'IES Ribera', 'color_primario' => '#0f766e', 'texto_portal' => 'Soporte TIC del instituto',
         'logo' => UploadedFile::fake()->image('logo.png', 200, 200),
     ])->assertSessionHasNoErrors();
 
     $e = $this->empresa->fresh();
-    expect($e->nombre)->toBe('IES Atiende')
+    expect($e->nombre)->toBe('IES Ribera')
         ->and($e->color_primario)->toBe('#0f766e')
         ->and($e->ajustes['texto_portal'])->toBe('Soporte TIC del instituto');
     Storage::disk('public')->assertExists($e->logo_path);

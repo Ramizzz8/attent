@@ -1,6 +1,6 @@
-# Atiende
+# ATTENT
 
-**Demo en vivo: [atiende.andresrami.com](https://atiende.andresrami.com)** (los datos se reinician cada noche; en la demo los enlaces mágicos aparecen en pantalla en lugar de enviarse por email).
+**Demo en vivo: [attent.andresrami.com](https://attent.andresrami.com)** (los datos se reinician cada noche; en la demo los enlaces mágicos aparecen en pantalla en lugar de enviarse por email).
 
 Plataforma de incidencias **multiempresa y especializada por sector**. Los clientes de cada negocio abren incidencias desde un portal propio de la empresa (sin contraseña, con enlaces mágicos por email) y el equipo las gestiona desde un panel interno.
 
@@ -43,7 +43,7 @@ Contraseña de todos los empleados: `password`.
 |---|---|---|---|
 | Talleres Ruiz (taller) | `/talleres-ruiz` | `admin@talleres-ruiz.test` | `empleado1@talleres-ruiz.test`, `empleado2@…` |
 | Fincas Levante (fincas) | `/fincas-levante` | `admin@fincas-levante.test` | `empleado1@fincas-levante.test`, `empleado2@…` |
-| IES Atiende · Soporte TIC | `/soporte-tic` | `admin@soporte-tic.test` | `empleado1@soporte-tic.test`, `empleado2@…` |
+| IES Ribera · Soporte TIC | `/soporte-tic` | `admin@soporte-tic.test` | `empleado1@soporte-tic.test`, `empleado2@…` |
 
 El panel interno está en `/panel` (acceso en `/login`). Cada empresa tiene incidencias en **todos** sus estados, con plazos vencidos y en riesgo, mensajes, notas internas, presupuestos y vecinos afectados.
 

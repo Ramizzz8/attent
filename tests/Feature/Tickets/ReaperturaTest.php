@@ -71,7 +71,7 @@ it('el comando cierra los resueltos de más de 7 días y no toca el taller', fun
     $reciente = resuelto('soporte_it', ['resuelto_en' => now()->subDays(2)]);
     $taller = resuelto('taller', ['resuelto_en' => now()->subDays(30)]);
 
-    $this->artisan('atiende:cerrar-resueltos')->assertSuccessful();
+    $this->artisan('attent:cerrar-resueltos')->assertSuccessful();
 
     expect($it->fresh()->estado)->toBe('cerrado')
         ->and($it->fresh()->cerrado_en)->not->toBeNull()
@@ -82,5 +82,5 @@ it('el comando cierra los resueltos de más de 7 días y no toca el taller', fun
 it('el cierre automático está programado a diario', function () {
     $eventos = collect(app(Illuminate\Console\Scheduling\Schedule::class)->events());
 
-    expect($eventos->contains(fn ($e) => str_contains($e->command ?? '', 'atiende:cerrar-resueltos')))->toBeTrue();
+    expect($eventos->contains(fn ($e) => str_contains($e->command ?? '', 'attent:cerrar-resueltos')))->toBeTrue();
 });

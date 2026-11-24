@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => Inertia\Inertia::render('welcome', [
     // En la demo pública se enseñan las empresas de ejemplo; en una instalación real, no.
-    'portales' => config('atiende.demo')
+    'portales' => config('attent.demo')
         ? App\Models\Empresa::orderBy('id')->get()->map(fn ($e) => [
             'nombre' => $e->nombre, 'sector' => $e->sector->value, 'slug' => $e->slug, 'color' => $e->color_primario,
         ])

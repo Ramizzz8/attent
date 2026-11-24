@@ -7,7 +7,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('atiende:preparar')]
+#[Signature('attent:preparar')]
 #[Description('Aplica las migraciones y, si la base de datos está vacía, carga los datos de demostración')]
 class Preparar extends Command
 {

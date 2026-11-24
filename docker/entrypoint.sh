@@ -8,8 +8,8 @@ mkdir -p storage/app/public storage/app/private storage/framework/cache/data \
          storage/framework/sessions storage/framework/views storage/logs
 [ -f storage/app/database.sqlite ] || touch storage/app/database.sqlite
 
-if [ "${ATIENDE_ROL:-web}" = "web" ]; then
-    php artisan atiende:preparar
+if [ "${ATTENT_ROL:-web}" = "web" ]; then
+    php artisan attent:preparar
     php artisan storage:link --force >/dev/null 2>&1 || true
 fi
 

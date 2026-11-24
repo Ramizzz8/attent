@@ -51,10 +51,10 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'status' => $request->session()->get('status'),
-            'cuentasDemo' => config('atiende.demo') ? [
+            'cuentasDemo' => config('attent.demo') ? [
                 ['empresa' => 'Talleres Ruiz (taller)', 'email' => 'admin@talleres-ruiz.test', 'portal' => '/talleres-ruiz'],
                 ['empresa' => 'Fincas Levante (administrador de fincas)', 'email' => 'admin@fincas-levante.test', 'portal' => '/fincas-levante'],
-                ['empresa' => 'IES Atiende · Soporte TIC', 'email' => 'admin@soporte-tic.test', 'portal' => '/soporte-tic'],
+                ['empresa' => 'IES Ribera · Soporte TIC', 'email' => 'admin@soporte-tic.test', 'portal' => '/soporte-tic'],
             ] : null,
         ]));
 

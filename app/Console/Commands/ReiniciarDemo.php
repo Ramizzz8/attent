@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
-#[Signature('atiende:reiniciar-demo')]
+#[Signature('attent:reiniciar-demo')]
 #[Description('Devuelve la demo pública a su estado inicial (datos y archivos subidos)')]
 class ReiniciarDemo extends Command
 {
     public function handle(): int
     {
         // Borra TODOS los datos: solo se permite en la demo o fuera de producción.
-        if (app()->isProduction() && ! config('atiende.demo')) {
+        if (app()->isProduction() && ! config('attent.demo')) {
             $this->error('Solo se puede reiniciar con DEMO_MODE activo.');
 
             return self::FAILURE;

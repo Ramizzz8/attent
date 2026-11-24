@@ -60,7 +60,7 @@ class TicketPortalController extends Controller
             $cliente->notify(new ConfirmarTicket($ticket));
 
             return redirect("/{$empresa->slug}/pendiente")
-                ->with('enlaceDemo', config('atiende.demo') ? EnlacesPortal::confirmar($ticket) : null);
+                ->with('enlaceDemo', config('attent.demo') ? EnlacesPortal::confirmar($ticket) : null);
         }
 
         return redirect("/{$empresa->slug}/tickets/{$ticket->numero}");

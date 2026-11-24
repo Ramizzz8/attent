@@ -11,7 +11,7 @@ class SoporteItDemoSeeder extends DemoBase
 {
     public function run(): void
     {
-        $this->empresa('IES Atiende · Soporte TIC', 'soporte-tic', SectorClave::SoporteIt, '#4f46e5',
+        $this->empresa('IES Ribera · Soporte TIC', 'soporte-tic', SectorClave::SoporteIt, '#4f46e5',
             'Avisa de cualquier problema con los ordenadores, proyectores, la red o tus cuentas del instituto.');
         $this->renombrarEquipo('Coordinación TIC', 'Sergio Blasco', 'Ana Vera');
         $this->clientes([

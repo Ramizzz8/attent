@@ -10,7 +10,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('atiende:cerrar-resueltos')]
+#[Signature('attent:cerrar-resueltos')]
 #[Description('Cierra las incidencias resueltas hace más de 7 días que el cliente no ha reabierto')]
 class CerrarResueltos extends Command
 {

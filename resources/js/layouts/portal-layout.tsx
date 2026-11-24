@@ -62,7 +62,7 @@ export default function PortalLayout({ children }: { children: ReactNode }) {
                 </div>
             </header>
             <main className="mx-auto max-w-3xl px-4 py-8">{children}</main>
-            <footer className="pb-8 text-center text-xs text-muted-foreground">Gestionado con Atiende</footer>
+            <footer className="pb-8 text-center text-xs text-muted-foreground">Gestionado con ATTENT</footer>
         </div>
     );
 }

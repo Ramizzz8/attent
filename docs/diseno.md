@@ -1,4 +1,4 @@
-# Atiende — Plataforma de incidencias por sector (diseño)
+# ATTENT — Plataforma de incidencias por sector (diseño)
 
 > Documento de diseño previo a la implementación (noviembre de 2026).
 
@@ -97,7 +97,7 @@ Cada sector define: campos del formulario del portal, estados y transiciones, ca
 
 - **Plazo muy corto:** alrededor de una semana. Prioridad estricta según la sección 3.
 - Desarrollo en Windows. **No están instalados PHP, Composer, Docker ni PostgreSQL** (sí Node 24). Hay que instalar Laravel Herd (PHP + Composer).
-- El proyecto vive en `C:\dev\atiende`, fuera de OneDrive (OneDrive rompe `node_modules`).
+- El proyecto vive en `C:\dev\attent`, fuera de OneDrive (OneDrive rompe `node_modules`).
 - Despliegue en un VPS que ya sirve otras webs con Caddy.
 - El frontend es React; el backend PHP debe quedar legible y explicable.
 

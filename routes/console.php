@@ -9,4 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // Cierra cada noche las incidencias resueltas hace más de 7 días.
-Schedule::command('atiende:cerrar-resueltos')->dailyAt('03:00');
+Schedule::command('attent:cerrar-resueltos')->dailyAt('03:00');

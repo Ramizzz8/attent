@@ -34,7 +34,7 @@ class AccesoController extends Controller
 
         return redirect("/{$empresa->slug}/acceder")
             ->with('status', self::MENSAJE_ENVIADO)
-            ->with('enlaceDemo', config('atiende.demo') && $cliente ? EnlacesPortal::entrar($cliente) : null);
+            ->with('enlaceDemo', config('attent.demo') && $cliente ? EnlacesPortal::entrar($cliente) : null);
     }
 
     public function entrar(Request $request, Empresa $empresa, int $cliente): RedirectResponse

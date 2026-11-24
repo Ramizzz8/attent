@@ -34,8 +34,8 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        @if (config('atiende.goatcounter'))
-            <script data-goatcounter="{{ rtrim(config('atiende.goatcounter'), '/') }}/count" async src="{{ rtrim(config('atiende.goatcounter'), '/') }}/count.js"></script>
+        @if (config('attent.goatcounter'))
+            <script data-goatcounter="{{ rtrim(config('attent.goatcounter'), '/') }}/count" async src="{{ rtrim(config('attent.goatcounter'), '/') }}/count.js"></script>
         @endif
 
         @fonts

@@ -1,4 +1,4 @@
-# Decisiones de implementación de Atiende
+# Decisiones de implementación de ATTENT
 
 Decisiones tomadas durante la implementación cuando el plan o el diseño no lo resolvían, con su motivo y su coste si fueran erróneas. Útil para entender el proyecto.
 
@@ -16,11 +16,11 @@ Decisiones tomadas durante la implementación cuando el plan o el diseño no lo 
 - Task 4: Ruling: columna sla_pausa_segundos para que recalcular() conserve el tiempo pausado — coste: ninguno.
 - Task 4: Ruling: el número se bloquea con lockForUpdate sobre la fila de empresa (PostgreSQL no admite FOR UPDATE con max()) — coste: ninguno.
 - Task 4: Ruling: evento de dominio TicketEstadoCambiado(ticket, sistema) para que T8/T15 escuchen — coste: ninguno.
-- Task 5: Ruling: rutas del portal en routes/portal.php cargadas en withRouting(then:) con slug que excluye config('atiende.slugs_reservados') — coste: ninguno.
+- Task 5: Ruling: rutas del portal en routes/portal.php cargadas en withRouting(then:) con slug que excluye config('attent.slugs_reservados') — coste: ninguno.
 - Task 5: Ruling: ResolverEmpresaPortal/Panel con prioridad antes de SubstituteBindings, y olvida en memoria la sesión de cliente de otra empresa (forgetUser) — coste: ninguno.
 - Task 5: Ruling: enlace caducado se renderiza con 200 y la marca de la empresa (handler de InvalidSignatureException) — coste: bajo.
 - Task 5: Ruling: rutas portal por número de ticket (/tickets/{numero}); enlaces firmados por id — coste: ninguno.
-- Task 5: Ruling: tests sin Vite (withoutVite en TestCase); APP_URL local = http://localhost:8010 (launch.json "atiende") — coste: ninguno.
+- Task 5: Ruling: tests sin Vite (withoutVite en TestCase); APP_URL local = http://localhost:8010 (launch.json "attent") — coste: ninguno.
 - Task 6: Ruling: adjuntos con ticket_id + mensaje_id nullable (las fotos del alta son adjuntos del ticket sin mensaje) — coste: ninguno.
 - Task 6: Ruling: descarga separada /panel/adjuntos/{id} y /{slug}/adjuntos/{id} (no una ruta /adjuntos común) — cada guard con su regla — coste: ninguno.
 - Task 6: Ruling: primera_respuesta_en se registra en todos los sectores (solo IT tiene vencimiento) — útil para estadísticas — coste: ninguno.
