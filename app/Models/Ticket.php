@@ -67,6 +67,12 @@ class Ticket extends Model
         return $this->belongsTo(Vehiculo::class);
     }
 
+    /** @return BelongsTo<Equipo, $this> */
+    public function equipo(): BelongsTo
+    {
+        return $this->belongsTo(Equipo::class);
+    }
+
     /** @return BelongsTo<Edificio, $this> */
     public function edificio(): BelongsTo
     {

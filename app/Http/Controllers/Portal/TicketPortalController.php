@@ -20,11 +20,11 @@ class TicketPortalController extends Controller
 {
     public function create(Request $request, Empresa $empresa): Response
     {
-        return Inertia::render('portal/nueva', [
+        return Inertia::render('portal/nueva', array_filter([
             'categorias' => collect($empresa->motor()->categorias())
                 ->map(fn ($etiqueta, $valor) => ['valor' => $valor, 'etiqueta' => $etiqueta])->values(),
             ...PortalFormularioSector::datos($empresa, $request),
-        ]);
+        ], fn ($v) => $v !== null));
     }
 
     public function store(Request $request, Empresa $empresa, CrearTicket $crear): RedirectResponse

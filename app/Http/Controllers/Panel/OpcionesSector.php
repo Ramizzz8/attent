@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Panel;
 use App\Enums\SectorClave;
 use App\Models\Edificio;
 use App\Models\Empresa;
+use App\Models\Equipo;
 use App\Models\Ticket;
 use App\Models\Vehiculo;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,6 +30,7 @@ final class OpcionesSector
         return match ($empresa->sector) {
             SectorClave::Taller => ['vehiculo'],
             SectorClave::Fincas => ['edificio', 'zona'],
+            SectorClave::SoporteIt => ['equipo'],
             default => [],
         };
     }
@@ -42,6 +44,10 @@ final class OpcionesSector
                 $q->orWhereHas('vehiculo', fn (Builder $v) => $v->where('matricula', 'like', "%{$matricula}%"));
             }
         }
+
+        if ($empresa->sector === SectorClave::SoporteIt) {
+            $q->orWhereHas('equipo', fn (Builder $e) => $e->where('codigo', 'like', '%'.Equipo::normalizarCodigo($texto).'%'));
+        }
     }
 
     /** Dato corto que acompaña al asunto en la fila de la bandeja. */
@@ -50,6 +56,7 @@ final class OpcionesSector
         return match ($ticket->empresa->sector) {
             SectorClave::Taller => $ticket->vehiculo?->matricula,
             SectorClave::Fincas => trim(($ticket->edificio?->nombre ?? '').' · '.($ticket->zona?->nombre ?? ''), ' ·') ?: null,
+            SectorClave::SoporteIt => $ticket->equipo ? "{$ticket->equipo->codigo} · {$ticket->equipo->ubicacion}" : null,
             default => null,
         };
     }

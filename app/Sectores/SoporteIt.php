@@ -4,7 +4,9 @@ namespace App\Sectores;
 
 use App\Enums\Prioridad;
 use App\Enums\SectorClave;
+use App\Models\Cliente;
 use App\Models\Empresa;
+use App\Models\Equipo;
 use App\Models\Ticket;
 use App\SoporteIt\MatrizPrioridad;
 
@@ -109,7 +111,20 @@ class SoporteIt extends SectorBase
     {
         return [
             'impacto' => ['required', 'in:'.implode(',', MatrizPrioridad::IMPACTOS)],
+            'equipo_codigo' => ['nullable', 'string', 'max:30', function (string $campo, mixed $valor, \Closure $fallo) {
+                if (! Equipo::where('codigo', Equipo::normalizarCodigo((string) $valor))->exists()) {
+                    $fallo('No hay ningún equipo con ese código. Míralo en la etiqueta del equipo o déjalo vacío.');
+                }
+            }],
         ];
+    }
+
+    /** Enlaza el equipo indicado por su código de inventario. */
+    public function antesDeGuardar(Ticket $ticket, Cliente $cliente, array $datos): void
+    {
+        if (filled($datos['equipo_codigo'] ?? null)) {
+            $ticket->equipo_id = Equipo::where('codigo', Equipo::normalizarCodigo($datos['equipo_codigo']))->value('id');
+        }
     }
 
     public function categorias(): array

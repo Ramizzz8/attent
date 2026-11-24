@@ -6,6 +6,7 @@ use App\Http\Controllers\Panel\EstadoController;
 use App\Http\Controllers\Panel\FincasController;
 use App\Http\Controllers\Panel\MensajeController;
 use App\Http\Controllers\Panel\PresupuestoController;
+use App\Http\Controllers\Panel\SoporteItController;
 use App\Http\Controllers\Panel\TicketController;
 use App\Http\Controllers\Proveedor\ProveedorTicketController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,12 @@ Route::middleware(['auth', 'verified', 'empresa.panel'])->group(function () {
         Route::post('tickets/{numero}/presupuestos', [PresupuestoController::class, 'store'])->whereNumber('numero')->name('presupuestos.store');
         Route::post('tickets/{numero}/proveedor', [FincasController::class, 'asignar'])->whereNumber('numero')->name('tickets.proveedor');
 
+        Route::post('tickets/{numero}/triaje', [SoporteItController::class, 'triaje'])->whereNumber('numero')->name('tickets.triaje');
+        Route::get('equipos', [SoporteItController::class, 'index'])->name('equipos.index');
+        Route::get('equipos/{equipo}', [SoporteItController::class, 'show'])->whereNumber('equipo')->name('equipos.show');
+
         Route::middleware('admin')->group(function () {
+            Route::post('equipos', [SoporteItController::class, 'store'])->name('equipos.store');
             Route::get('edificios', [FincasController::class, 'index'])->name('edificios.index');
             Route::post('edificios', [FincasController::class, 'storeEdificio'])->name('edificios.store');
             Route::post('proveedores', [FincasController::class, 'storeProveedor'])->name('proveedores.store');

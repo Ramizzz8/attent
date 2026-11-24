@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Enums\SectorClave;
+use App\Models\Equipo;
 use App\Models\Presupuesto;
 use App\Models\Proveedor;
 use App\Models\Ticket;
@@ -16,8 +17,27 @@ final class ModulosTicket
         return match ($ticket->empresa->sector) {
             SectorClave::Taller => self::taller($ticket),
             SectorClave::Fincas => self::fincas($ticket),
+            SectorClave::SoporteIt => self::soporteIt($ticket),
             default => [],
         };
+    }
+
+    /** @return array<string, mixed> */
+    private static function soporteIt(Ticket $ticket): array
+    {
+        $equipo = $ticket->equipo;
+
+        return [
+            'impacto' => $ticket->impacto,
+            'urgencia' => $ticket->urgencia,
+            'equipo' => $equipo ? [
+                'id' => $equipo->id,
+                'codigo' => $equipo->codigo,
+                'tipo' => Equipo::TIPOS[$equipo->tipo] ?? $equipo->tipo,
+                'ubicacion' => $equipo->ubicacion,
+                'incidencias' => $equipo->tickets()->count(),
+            ] : null,
+        ];
     }
 
     /** @return array<string, mixed> */

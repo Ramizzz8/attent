@@ -14,7 +14,7 @@ class CrearTicket
     /** Columnas del ticket que puede aportar el formulario; lo demás va en 'datos'. */
     private const CAMPOS = [
         'asunto', 'descripcion', 'categoria', 'impacto', 'urgencia',
-        'edificio_id', 'zona_id', 'vehiculo_id', 'equipo_id', 'datos',
+        'edificio_id', 'zona_id', 'datos',
     ];
 
     public function __construct(private Sla $sla) {}

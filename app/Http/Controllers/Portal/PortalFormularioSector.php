@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal;
 use App\Enums\SectorClave;
 use App\Models\Edificio;
 use App\Models\Empresa;
+use App\Models\Equipo;
 use App\Models\Zona;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,13 @@ final class PortalFormularioSector
                     'direccion' => $e->direccion,
                     'zonas' => $e->zonas->map(fn (Zona $z) => ['id' => $z->id, 'nombre' => $z->nombre]),
                 ]),
+            ],
+            SectorClave::SoporteIt => [
+                'equipos' => Equipo::orderBy('codigo')->get()->map(fn (Equipo $e) => [
+                    'codigo' => $e->codigo,
+                    'descripcion' => (Equipo::TIPOS[$e->tipo] ?? $e->tipo).' · '.$e->ubicacion,
+                ]),
+                'valoresIniciales' => $request->filled('equipo') ? ['equipo_codigo' => Equipo::normalizarCodigo($request->string('equipo'))] : null,
             ],
             default => [],
         };
