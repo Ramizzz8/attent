@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Rol;
+use App\Models\Empresa;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +27,8 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'empresa_id' => Empresa::factory(),
+            'rol' => Rol::Empleado,
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
@@ -34,6 +38,11 @@ class UserFactory extends Factory
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ];
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn () => ['rol' => Rol::Admin]);
     }
 
     /**

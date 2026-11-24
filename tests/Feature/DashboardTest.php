@@ -1,27 +1,12 @@
 <?php
 
-namespace Tests\Feature;
-
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
-class DashboardTest extends TestCase
-{
-    use RefreshDatabase;
+it('redirige a los invitados al login', function () {
+    $this->get('/panel')->assertRedirect(route('login'));
+});
 
-    public function test_guests_are_redirected_to_the_login_page()
-    {
-        $response = $this->get(route('dashboard'));
-        $response->assertRedirect(route('login'));
-    }
-
-    public function test_authenticated_users_can_visit_the_dashboard()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $response = $this->get(route('dashboard'));
-        $response->assertOk();
-    }
-}
+it('el panel está en /panel', function () {
+    expect(route('dashboard', absolute: false))->toBe('/panel');
+    $this->actingAs(User::factory()->create())->get('/panel')->assertOk();
+});

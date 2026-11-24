@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import { BarChart3, Building2, ExternalLink, Inbox, Monitor, Settings, Users } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -16,28 +17,38 @@ import {
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+type EmpresaPanel = { nombre: string; slug: string; color: string; sector: string; esAdmin: boolean } | null;
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+/** Menú del panel. Los módulos de cada sector y de administración se añaden según la empresa. */
+export function menuPanel(empresa: EmpresaPanel): NavItem[] {
+    const items: NavItem[] = [{ title: 'Bandeja', href: dashboard(), icon: Inbox }];
+    const admin: NavItem[] = empresa?.esAdmin
+        ? [
+              { title: 'Estadísticas', href: '/panel/estadisticas', icon: BarChart3 },
+              { title: 'Empleados', href: '/panel/empleados', icon: Users },
+              { title: 'Ajustes', href: '/panel/ajustes', icon: Settings },
+          ]
+        : [];
+
+    return [...items, ...menuSector(empresa), ...admin];
+}
+
+function menuSector(empresa: EmpresaPanel): NavItem[] {
+    switch (empresa?.sector) {
+        case 'fincas':
+            return empresa.esAdmin ? [{ title: 'Edificios y proveedores', href: '/panel/edificios', icon: Building2 }] : [];
+        case 'soporte_it':
+            return [{ title: 'Equipos', href: '/panel/equipos', icon: Monitor }];
+        default:
+            return [];
+    }
+}
 
 export function AppSidebar() {
+    const empresa = usePage().props.empresaPanel as EmpresaPanel;
+    const mainNavItems = menuPanel(empresa);
+    const footerNavItems: NavItem[] = empresa ? [{ title: 'Ver portal de clientes', href: `/${empresa.slug}`, icon: ExternalLink }] : [];
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

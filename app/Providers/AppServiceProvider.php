@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->scoped(\App\Tenancy\EmpresaActual::class);
         //
     }
 
@@ -23,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Support\Facades\Event::listen(\App\Events\TicketEstadoCambiado::class, [\App\Listeners\AvisarPorEmail::class, 'estadoCambiado']);
+        \Illuminate\Support\Facades\Event::listen(\App\Events\MensajeCreado::class, [\App\Listeners\AvisarPorEmail::class, 'mensajeCreado']);
+        \Illuminate\Support\Facades\Event::listen(\App\Events\TicketEstadoCambiado::class, [\App\Listeners\AvisarEnTiempoReal::class, 'estadoCambiado']);
+        \Illuminate\Support\Facades\Event::listen(\App\Events\MensajeCreado::class, [\App\Listeners\AvisarEnTiempoReal::class, 'mensajeCreado']);
+
         $this->configureDefaults();
     }
 
