@@ -1,0 +1,57 @@
+# Decisiones de implementación de Atiende
+
+Decisiones tomadas durante la implementación cuando el plan o el diseño no lo resolvían, con su motivo y su coste si fueran erróneas. Útil para entender el proyecto.
+
+- Ruling: Laravel 13 + Inertia 3 + Fortify (lo que instala el starter kit actual) — el plan decía "versión estable actual" — coste bajo.
+- Ruling: PHP de Herd no está en el PATH de esta shell; se antepone $USERPROFILE/.config/herd/bin — no afecta al código.
+- Pre-flight: T3 validarTransicion consume Ticket (T4) y Presupuesto (T9) → Ruling: T3 crea modelos/migraciones mínimas de tickets; test de presupuesto en T3 como todo() hasta T9 — coste: ninguno.
+- Ruling: settings del starter kit se quedan en /settings (solo dashboard pasa a /panel); 'settings' entrará en slugs reservados — coste: ninguno.
+- Task 2: Ruling: Empresa no tiene método sector() (choca con el atributo); el motor se obtiene con Empresa::motor() en T3 — coste: ninguno.
+- Task 3: Ruling: tests de sectores en tests/Feature/Sectores (necesitan BD), no en Unit — coste: ninguno.
+- Task 3: Ruling: validarTransicion(Ticket, destino, ?motivo) — descartar en fincas necesita el motivo — coste: ninguno.
+- Task 3: Ruling: interfaz Sector añade estadosSoloSistema(), estadosTerminados(), primeraRespuestaMinutos(); slaMinutos recibe Empresa — coste: ninguno.
+- Task 3: Ruling: migración completa de tickets, ticket_eventos, presupuestos y presupuesto_lineas creada ya en T3 (T4/T9 la reutilizan) — coste: ninguno.
+- Task 3: Ruling: prioridad por zona (fincas) y comprobación de edificio del proveedor quedan para T10 — coste: ninguno.
+- Task 4: Ruling: el SLA arranca al verificar el ticket (CrearTicket::verificar), no al crearlo sin verificar — un ticket de spam no debe correr reloj — coste: bajo.
+- Task 4: Ruling: columna sla_pausa_segundos para que recalcular() conserve el tiempo pausado — coste: ninguno.
+- Task 4: Ruling: el número se bloquea con lockForUpdate sobre la fila de empresa (PostgreSQL no admite FOR UPDATE con max()) — coste: ninguno.
+- Task 4: Ruling: evento de dominio TicketEstadoCambiado(ticket, sistema) para que T8/T15 escuchen — coste: ninguno.
+- Task 5: Ruling: rutas del portal en routes/portal.php cargadas en withRouting(then:) con slug que excluye config('atiende.slugs_reservados') — coste: ninguno.
+- Task 5: Ruling: ResolverEmpresaPortal/Panel con prioridad antes de SubstituteBindings, y olvida en memoria la sesión de cliente de otra empresa (forgetUser) — coste: ninguno.
+- Task 5: Ruling: enlace caducado se renderiza con 200 y la marca de la empresa (handler de InvalidSignatureException) — coste: bajo.
+- Task 5: Ruling: rutas portal por número de ticket (/tickets/{numero}); enlaces firmados por id — coste: ninguno.
+- Task 5: Ruling: tests sin Vite (withoutVite en TestCase); APP_URL local = http://localhost:8010 (launch.json "atiende") — coste: ninguno.
+- Task 6: Ruling: adjuntos con ticket_id + mensaje_id nullable (las fotos del alta son adjuntos del ticket sin mensaje) — coste: ninguno.
+- Task 6: Ruling: descarga separada /panel/adjuntos/{id} y /{slug}/adjuntos/{id} (no una ruta /adjuntos común) — cada guard con su regla — coste: ninguno.
+- Task 6: Ruling: primera_respuesta_en se registra en todos los sectores (solo IT tiene vencimiento) — útil para estadísticas — coste: ninguno.
+- Task 7: Ruling: la bandeja sustituye al dashboard del starter kit en /panel (nombre de ruta 'dashboard' conservado) — coste: ninguno.
+- Task 7: Ruling: tests "búsqueda por matrícula" → T9 y "empleado no entra en /panel/empleados (403)" → T13, donde existen esas piezas — coste: ninguno.
+- Task 7: Ruling: en soporte IT, asignar un ticket "nuevo" lo pasa a "asignado" automáticamente — coste: bajo.
+- Task 7: Ruling: props compartidas del panel usan el guard web explícito (auth.user, empresaPanel) — coste: ninguno.
+- Task 8: Ruling: TicketEstadoCambiado lleva actor y origen; no se avisa al cliente de cambios que provoca él mismo ni de tickets sin verificar — coste: ninguno.
+- Task 8: Ruling: Ticket::clientesAvisables() (cliente; T10 añade afectados) — coste: ninguno.
+- Task 9: Ruling: hook Sector::antesDeGuardar(ticket, cliente, datos) para enlazar vehículo/equipo al crear — coste: ninguno.
+- Task 9: Ruling: si una matrícula ya existe con otro cliente, el vehículo pasa al cliente actual (cambio de dueño) — coste: bajo.
+- Task 9: Ruling: historial del vehículo dentro del detalle del ticket, sin página propia panel/taller/vehiculo — coste: bajo.
+- Task 10: Ruling: un vecino sin sesión que pulsa "me afecta" confirma por email (ConfirmarAfectado, firma 24 h) antes de contar — evita inflar prioridades — coste: bajo.
+- Task 10: Ruling: los afectados ven el ticket en su portal (scope delCliente) y reciben avisos; solo el que lo abrió responde presupuestos — coste: ninguno.
+- Task 10: Ruling: rutas de proveedor /proveedor/{proveedor}/tickets/{ticket}; si el ticket se reasigna, el enlace antiguo da 403 — coste: ninguno.
+- Task 10: Ruling: gestión de edificios/proveedores solo para admin (middleware 'admin', creado aquí); alta de zonas como texto, una por línea, '*' = prioritaria — coste: bajo.
+- Task 10: Ruling: cambiar de proveedor permitido mientras no esté resuelta; borra la visita programada — coste: bajo.
+- Task 11: Ruling: el código de equipo es opcional en el portal (problemas de cuentas/red no tienen equipo); si se indica, debe existir — coste: bajo.
+- Task 11: Ruling: CrearTicket ya no acepta vehiculo_id/equipo_id del formulario: los enlaza el sector (evita que un cliente apunte a IDs ajenos) — coste: ninguno.
+- Task 11: Ruling: inventario visible para todo el equipo; alta de equipos solo admin — coste: bajo.
+- Task 12: Ruling: al reabrir se reinicia el plazo (sla_cumplido null, vence = ahora + minutos de su prioridad) — coste: bajo (se pierde el cumplimiento del primer ciclo en estadísticas).
+- Task 12: Ruling: solo reabre quien abrió la incidencia, no los afectados — coste: bajo.
+- Task 13: Ruling: el empleado invitado queda con email verificado (lo da de alta el admin y confirma al crear contraseña con el enlace de reseteo) — coste: bajo.
+- Task 13: Ruling: el email de empleado es único en toda la plataforma (tabla users del starter kit) — coste: bajo.
+- Task 14: Ruling: DatabaseSeeder sin WithoutModelEvents (silenciaba el relleno de empresa_id) y llama a DemoSeeder; la demo fuerza cola sync + mailer array para no generar emails — coste: ninguno.
+- Task 14: Ruling: el test de "re-ejecutar tras migrate:fresh" se sustituye por "db:seed carga la demo con eventos activos" (migrate:fresh no puede ir dentro de la transacción del test) — coste: ninguno.
+- Task 15: Ruling: un único evento difundido TicketActualizado(tipo) en cola (ShouldBroadcast) en vez de dos; si Reverb cae, la petición no falla — coste: bajo (necesita queue:work, que ya hacía falta para emails).
+- Task 15: Ruling: la autorización del canal vive en App\Broadcasting\CanalEmpresa y se prueba con join() directo (el broadcaster null de los tests no autoriza) — coste: ninguno.
+- Task 16: Ruling: gráficas en HTML/CSS (cifras destacadas + barras de una serie con valor y tooltip), sin Recharts — menos dependencias, mismo mensaje — coste: bajo.
+- Task 16: Ruling: tiempo medio = verificación → primera llegada al estado objetivo del sector, calculado en PHP (consultas portables) — coste: ninguno a esta escala.
+- Task 17: Ruling: se valora en estado resuelto o cerrado (no descartada), una sola vez, solo quien abrió la incidencia — coste: bajo.
+- Task 18: Ruling: PDF por versión (/presupuestos/{version}/pdf) con logo incrustado en base64 — coste: ninguno.
+- Task 19: Ruling: el despliegue real necesita acceso SSH/DNS del propietario → primero se escribe la guía docs/despliegue.md.
+- Global: Ruling: traducidas al español las pantallas de acceso, contraseña y ajustes del starter kit (restricción global "todo el texto visible en español"); 2FA/passkeys quedan parcialmente en inglés — coste: bajo.

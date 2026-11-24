@@ -57,5 +57,6 @@ Cubren las reglas de cada sector, la máquina de estados (incluidos retrocesos y
 
 ## Documentación
 
-- Diseño: `docs/superpowers/specs/2026-11-24-plataforma-tickets-design.md`
-- Plan de implementación: `docs/superpowers/plans/2026-11-24-atiende.md`
+- Diseño: [`docs/diseno.md`](docs/diseno.md)
+- Decisiones tomadas durante la implementación: [`docs/decisiones-implementacion.md`](docs/decisiones-implementacion.md)
+- Despliegue en un VPS: [`docs/despliegue.md`](docs/despliegue.md)
