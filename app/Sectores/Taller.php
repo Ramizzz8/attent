@@ -97,6 +97,17 @@ class Taller extends SectorBase
         return ['baja' => 2880, 'media' => 2880, 'alta' => 2880, 'urgente' => 2880];
     }
 
+    public function reglasFormulario(): array
+    {
+        return [
+            'datos' => ['required', 'array'],
+            'datos.matricula' => ['required', 'string', 'max:12', 'regex:/^[A-Za-z0-9 \-]+$/'],
+            'datos.marca' => ['nullable', 'string', 'max:50'],
+            'datos.modelo' => ['nullable', 'string', 'max:50'],
+            'datos.km' => ['nullable', 'integer', 'min:0', 'max:2000000'],
+        ];
+    }
+
     public function categorias(): array
     {
         return [

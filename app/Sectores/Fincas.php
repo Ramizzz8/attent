@@ -96,6 +96,14 @@ class Fincas extends SectorBase
         return ['baja' => 10080, 'media' => 4320, 'alta' => 1440, 'urgente' => 480];
     }
 
+    public function reglasFormulario(): array
+    {
+        return [
+            'datos' => ['required', 'array'],
+            'datos.vivienda' => ['required', 'string', 'max:30'],
+        ];
+    }
+
     public function categorias(): array
     {
         return [

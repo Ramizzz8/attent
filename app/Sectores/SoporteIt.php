@@ -105,6 +105,13 @@ class SoporteIt extends SectorBase
         };
     }
 
+    public function reglasFormulario(): array
+    {
+        return [
+            'impacto' => ['required', 'in:'.implode(',', MatrizPrioridad::IMPACTOS)],
+        ];
+    }
+
     public function categorias(): array
     {
         return [
