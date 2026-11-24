@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\SectorClave;
+use App\Sectores\Sector;
+use App\Sectores\Sectores;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +25,12 @@ class Empresa extends Model
             'sector' => SectorClave::class,
             'ajustes' => 'array',
         ];
+    }
+
+    /** Reglas de comportamiento del sector de la empresa. */
+    public function motor(): Sector
+    {
+        return Sectores::para($this->sector);
     }
 
     public function getRouteKeyName(): string
