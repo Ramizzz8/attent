@@ -1,4 +1,6 @@
 import { useForm } from '@inertiajs/react';
+import { MessagesSquare } from 'lucide-react';
+import { EstadoVacio } from '@/components/estado-vacio';
 import { Lock, Paperclip } from 'lucide-react';
 import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
@@ -69,7 +71,13 @@ export function Conversacion({
     return (
         <section className="rounded-xl border bg-background p-6 shadow-sm">
             <h2 className="mb-4 font-semibold">Conversación</h2>
-            {mensajes.length === 0 && <p className="mb-4 text-sm text-muted-foreground">Aún no hay mensajes.</p>}
+            {mensajes.length === 0 && (
+                <EstadoVacio
+                    icono={MessagesSquare}
+                    titulo="Aún no hay mensajes"
+                    texto={lado === 'equipo' ? 'Escribe al cliente o deja una nota interna que solo verá tu equipo.' : 'Si quieres añadir algo o tienes una duda, escríbenos aquí abajo.'}
+                />
+            )}
             <ol className="space-y-3">
                 {mensajes.map((m) => {
                     const propio = lado === 'equipo' ? m.delEquipo : !m.delEquipo;

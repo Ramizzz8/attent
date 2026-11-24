@@ -1,4 +1,6 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { MonitorX } from 'lucide-react';
+import { EstadoVacio } from '@/components/estado-vacio';
 import type { FormEvent } from 'react';
 import { Campo, claseSelect } from '@/components/portal/campo';
 import { Button } from '@/components/ui/button';
@@ -75,8 +77,12 @@ export default function Equipos({ equipos, tipos }: { equipos: Equipo[]; tipos: 
                             ))}
                             {equipos.length === 0 && (
                                 <tr>
-                                    <td colSpan={4} className="p-6 text-center text-muted-foreground">
-                                        Aún no hay equipos en el inventario.
+                                    <td colSpan={4}>
+                                        <EstadoVacio
+                                            icono={MonitorX}
+                                            titulo="Aún no hay equipos en el inventario"
+                                            texto="Da de alta los equipos con su código: así quien avisa puede indicar cuál falla y verás su historial."
+                                        />
                                     </td>
                                 </tr>
                             )}

@@ -1,4 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
+import { Inbox } from 'lucide-react';
+import { EstadoVacio } from '@/components/estado-vacio';
 import { EstadoPill, fecha } from '@/components/portal/estado-pill';
 import { usePortalUrl } from '@/hooks/use-portal';
 
@@ -12,7 +14,18 @@ export default function MisTickets({ tickets }: { tickets: Fila[] }) {
             <Head title="Mis incidencias" />
             <h1 className="mb-4 text-2xl font-semibold">Mis incidencias</h1>
             {tickets.length === 0 ? (
-                <p className="rounded-xl border bg-background p-6 text-muted-foreground">Todavía no tienes incidencias.</p>
+                <div className="rounded-xl border bg-background">
+                    <EstadoVacio
+                        icono={Inbox}
+                        titulo="Todavía no tienes incidencias"
+                        texto="Cuando abras una, aquí verás en qué estado está y cada respuesta del equipo."
+                        accion={
+                            <Link href={url('nueva')} className="inline-flex rounded-full px-5 py-2.5 text-sm font-medium text-white" style={{ background: 'var(--marca)' }}>
+                                Abrir una incidencia
+                            </Link>
+                        }
+                    />
+                </div>
             ) : (
                 <ul className="divide-y rounded-xl border bg-background shadow-sm">
                     {tickets.map((t) => (

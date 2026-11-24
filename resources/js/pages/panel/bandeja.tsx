@@ -1,4 +1,7 @@
 import { Head, Link, router } from '@inertiajs/react';
+import { SearchX } from 'lucide-react';
+import { EstadoVacio } from '@/components/estado-vacio';
+import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
@@ -158,8 +161,17 @@ export default function Bandeja({
                         <tbody className="divide-y">
                             {tickets.data.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="p-6 text-center text-muted-foreground">
-                                        No hay incidencias con estos filtros.
+                                    <td colSpan={6}>
+                                        <EstadoVacio
+                                            icono={SearchX}
+                                            titulo="No hay incidencias con estos filtros"
+                                            texto="Prueba con otros filtros o vuelve a ver todas las incidencias abiertas."
+                                            accion={
+                                                <Button variant="outline" onClick={() => router.get('/panel')}>
+                                                    Quitar los filtros
+                                                </Button>
+                                            }
+                                        />
                                     </td>
                                 </tr>
                             )}
