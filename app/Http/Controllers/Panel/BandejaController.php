@@ -64,6 +64,7 @@ class BandejaController extends Controller
         return Inertia::render('panel/bandeja', [
             'tickets' => $tickets,
             'filtros' => (object) $filtros,
+            'contadores' => $this->contadores($request, $empresa),
             'opciones' => [
                 'estados' => collect($sector->estados())->map(fn ($e, $k) => ['valor' => $k, 'etiqueta' => $e])->values(),
                 'categorias' => collect($sector->categorias())->map(fn ($e, $k) => ['valor' => $k, 'etiqueta' => $e])->values(),
@@ -73,6 +74,23 @@ class BandejaController extends Controller
                 ...OpcionesSector::bandeja($empresa),
             ],
         ]);
+    }
+
+    /**
+     * Filtros rápidos de la bandeja, contados sobre las incidencias verificadas y abiertas.
+     *
+     * @return array{mios: int, sin_asignar: int, vencidas: int, en_riesgo: int}
+     */
+    private function contadores(Request $request, $empresa): array
+    {
+        $base = fn () => Ticket::query()->verificados()->abiertos($empresa->motor());
+
+        return [
+            'mios' => $base()->where('asignado_a', $request->user()->id)->count(),
+            'sin_asignar' => $base()->whereNull('asignado_a')->count(),
+            'vencidas' => tap($base(), fn ($q) => $this->filtrarSla($q, 'vencido', $empresa))->count(),
+            'en_riesgo' => tap($base(), fn ($q) => $this->filtrarSla($q, 'en_riesgo', $empresa))->count(),
+        ];
     }
 
     private function filtrarSla(Builder $q, string $filtro, $empresa): void

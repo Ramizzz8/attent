@@ -71,6 +71,18 @@ it('filtra por SLA vencido y en riesgo', function () {
         ->and(numerosBandeja($this, '?sla=en_riesgo'))->toBe([2]);
 });
 
+it('cuenta los filtros rápidos solo sobre incidencias abiertas', function () {
+    $this->freezeSecond();
+    ticketDe($this->empresa, ['numero' => 1, 'asignado_a' => $this->yo->id, 'sla_vence_en' => now()->addDay()]);
+    ticketDe($this->empresa, ['numero' => 2, 'sla_vence_en' => now()->subMinute()]);                       // sin asignar y vencida
+    ticketDe($this->empresa, ['numero' => 3, 'prioridad' => Prioridad::Media, 'sla_vence_en' => now()->addMinutes(100)]); // sin asignar, en riesgo
+    ticketDe($this->empresa, ['numero' => 4, 'estado' => 'cerrado', 'sla_vence_en' => now()->subDay()]);   // cerrada: no cuenta
+    ticketDe($this->empresa, ['numero' => 5, 'verificado_en' => null]);                                     // sin verificar: no cuenta
+
+    $this->actingAs($this->yo)->get('/panel')->assertInertia(fn (Assert $p) => $p
+        ->where('contadores', ['mios' => 1, 'sin_asignar' => 2, 'vencidas' => 1, 'en_riesgo' => 1]));
+});
+
 it('busca por número, asunto y email del cliente', function () {
     // Datos fijos: con nombres o emails aleatorios la búsqueda podría coincidir por casualidad.
     $c = Cliente::factory()->for($this->empresa)->create(['nombre' => 'Marta', 'email' => 'zzmarta@cole.es']);

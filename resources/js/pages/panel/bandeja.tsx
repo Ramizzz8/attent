@@ -5,6 +5,7 @@ import type { FormEvent } from 'react';
 import { claseSelect } from '@/components/portal/campo';
 import { EstadoBadge, PrioridadBadge, relativo, SlaBadge } from '@/components/panel/insignias';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import { useAvisosPanel } from '@/hooks/use-avisos-panel';
 import { toast } from 'sonner';
 import { dashboard } from '@/routes';
@@ -41,12 +42,24 @@ type Opciones = {
     edificios?: Opcion[];
 };
 
-export default function Bandeja({ tickets, filtros, opciones }: { tickets: Paginado<Fila>; filtros: Filtros; opciones: Opciones }) {
+type Contadores = { mios: number; sin_asignar: number; vencidas: number; en_riesgo: number };
+
+export default function Bandeja({
+    tickets,
+    filtros,
+    opciones,
+    contadores,
+}: {
+    tickets: Paginado<Fila>;
+    filtros: Filtros;
+    opciones: Opciones;
+    contadores: Contadores;
+}) {
     const [q, setQ] = useState(filtros.q ?? '');
 
     // Tiempo real: recarga la lista cuando cambia cualquier ticket de la empresa.
     useAvisosPanel((aviso) => {
-        router.reload({ only: ['tickets'] });
+        router.reload({ only: ['tickets', 'contadores'] });
         if (aviso.tipo === 'creado') {
             toast(`Nueva incidencia #${aviso.numero}`, { description: aviso.asunto });
         }
@@ -89,6 +102,32 @@ export default function Bandeja({ tickets, filtros, opciones }: { tickets: Pagin
                     </form>
                 </div>
 
+                <div className="flex flex-wrap gap-2" aria-label="Filtros rápidos">
+                    {(
+                        [
+                            ['Mis incidencias', contadores.mios, { asignado: 'yo', sla: undefined }, filtros.asignado === 'yo' && !filtros.sla],
+                            ['Sin asignar', contadores.sin_asignar, { asignado: 'sin_asignar', sla: undefined }, filtros.asignado === 'sin_asignar' && !filtros.sla],
+                            ['Vencidas', contadores.vencidas, { sla: 'vencido', asignado: undefined }, filtros.sla === 'vencido'],
+                            ['En riesgo', contadores.en_riesgo, { sla: 'en_riesgo', asignado: undefined }, filtros.sla === 'en_riesgo'],
+                        ] as const
+                    ).map(([texto, total, cambio, activo]) => (
+                        <button
+                            key={texto}
+                            type="button"
+                            aria-pressed={activo}
+                            onClick={() => filtrar(activo ? { asignado: undefined, sla: undefined } : cambio)}
+                            className={cn(
+                                'inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition active:scale-[0.97]',
+                                activo ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-accent',
+                                texto === 'Vencidas' && total > 0 && !activo && 'text-red-700 dark:text-red-300',
+                            )}
+                        >
+                            {texto}
+                            <span className={cn('rounded-full px-2 text-xs tabular-nums', activo ? 'bg-white/20' : 'bg-background')}>{total}</span>
+                        </button>
+                    ))}
+                </div>
+
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
                     {selector('estado', 'Estado', [{ valor: 'todos', etiqueta: 'Todos' }, ...opciones.estados], 'Abiertos')}
                     {selector('asignado', 'Asignado', [{ valor: 'yo', etiqueta: 'Mis tickets' }, { valor: 'sin_asignar', etiqueta: 'Sin asignar' }, ...opciones.empleados])}
@@ -122,10 +161,16 @@ export default function Bandeja({ tickets, filtros, opciones }: { tickets: Pagin
                                 </tr>
                             )}
                             {tickets.data.map((t) => (
-                                <tr key={t.numero} className="hover:bg-muted/40">
+                                <tr
+                                    key={t.numero}
+                                    className="cursor-pointer transition hover:bg-accent/60 focus-within:bg-accent/60"
+                                    onClick={(e) => {
+                                        if (!(e.target as HTMLElement).closest('a')) router.visit(`/panel/tickets/${t.numero}`);
+                                    }}
+                                >
                                     <td className="p-3 text-muted-foreground">{t.numero}</td>
                                     <td className="p-3">
-                                        <Link href={`/panel/tickets/${t.numero}`} className="font-medium hover:underline">
+                                        <Link href={`/panel/tickets/${t.numero}`} className="font-medium hover:underline focus-visible:outline-2 focus-visible:outline-primary">
                                             {t.asunto}
                                         </Link>
                                         <p className="text-xs text-muted-foreground">
