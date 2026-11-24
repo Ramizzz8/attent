@@ -5,6 +5,8 @@ import type { FormEvent } from 'react';
 import { claseSelect } from '@/components/portal/campo';
 import { EstadoBadge, PrioridadBadge, relativo, SlaBadge } from '@/components/panel/insignias';
 import { Input } from '@/components/ui/input';
+import { useAvisosPanel } from '@/hooks/use-avisos-panel';
+import { toast } from 'sonner';
 import { dashboard } from '@/routes';
 import type { Opcion } from '@/types/portal';
 
@@ -41,6 +43,14 @@ type Opciones = {
 
 export default function Bandeja({ tickets, filtros, opciones }: { tickets: Paginado<Fila>; filtros: Filtros; opciones: Opciones }) {
     const [q, setQ] = useState(filtros.q ?? '');
+
+    // Tiempo real: recarga la lista cuando cambia cualquier ticket de la empresa.
+    useAvisosPanel((aviso) => {
+        router.reload({ only: ['tickets'] });
+        if (aviso.tipo === 'creado') {
+            toast(`Nueva incidencia #${aviso.numero}`, { description: aviso.asunto });
+        }
+    });
 
     function filtrar(cambios: Filtros) {
         const nuevos = { ...filtros, ...cambios };

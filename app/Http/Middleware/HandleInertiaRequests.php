@@ -42,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user('web'),
             ],
             'empresaPanel' => fn () => ($empresa = $request->user('web')?->empresa) ? [
+                'id' => $empresa->id,
                 'nombre' => $empresa->nombre,
                 'slug' => $empresa->slug,
                 'color' => $empresa->color_primario,

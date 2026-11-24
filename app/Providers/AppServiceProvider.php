@@ -26,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Support\Facades\Event::listen(\App\Events\TicketEstadoCambiado::class, [\App\Listeners\AvisarPorEmail::class, 'estadoCambiado']);
         \Illuminate\Support\Facades\Event::listen(\App\Events\MensajeCreado::class, [\App\Listeners\AvisarPorEmail::class, 'mensajeCreado']);
+        \Illuminate\Support\Facades\Event::listen(\App\Events\TicketEstadoCambiado::class, [\App\Listeners\AvisarEnTiempoReal::class, 'estadoCambiado']);
+        \Illuminate\Support\Facades\Event::listen(\App\Events\MensajeCreado::class, [\App\Listeners\AvisarEnTiempoReal::class, 'mensajeCreado']);
 
         $this->configureDefaults();
     }

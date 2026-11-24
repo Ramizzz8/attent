@@ -10,6 +10,7 @@ import { claseSelect } from '@/components/portal/campo';
 import { fecha } from '@/components/portal/estado-pill';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAvisosPanel } from '@/hooks/use-avisos-panel';
 import { dashboard } from '@/routes';
 
 export type TicketPanel = {
@@ -73,6 +74,13 @@ export default function TicketPanelPage({ ticket, destinos, empleados }: { ticke
     const [motivo, setMotivo] = useState('');
     const [pidiendoMotivo, setPidiendoMotivo] = useState<Destino | null>(null);
     const base = `/panel/tickets/${ticket.numero}`;
+
+    // Tiempo real: si otro empleado o el cliente cambia este ticket, se refresca solo.
+    useAvisosPanel((aviso) => {
+        if (aviso.numero === ticket.numero) {
+            router.reload({ only: ['ticket', 'destinos'] });
+        }
+    });
 
     function cambiarEstado(d: Destino, conMotivo?: string) {
         if (d.retroceso && !conMotivo) {

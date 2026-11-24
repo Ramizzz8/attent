@@ -2,6 +2,7 @@
 
 namespace App\Tickets;
 
+use App\Listeners\AvisarEnTiempoReal;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Ticket;
@@ -33,7 +34,7 @@ class CrearTicket
             $campos['urgencia'] ??= SoporteIt::urgenciaInicial($campos['categoria'] ?? null);
         }
 
-        return DB::transaction(function () use ($empresa, $cliente, $campos, $datos, $sector, $verificado) {
+        $ticket = DB::transaction(function () use ($empresa, $cliente, $campos, $datos, $sector, $verificado) {
             // Bloquea la fila de la empresa para que dos altas simultáneas no repitan número.
             Empresa::whereKey($empresa->id)->lockForUpdate()->first();
             $numero = (int) Ticket::withoutGlobalScopes()->where('empresa_id', $empresa->id)->max('numero') + 1;
@@ -60,6 +61,10 @@ class CrearTicket
 
             return $ticket;
         });
+
+        AvisarEnTiempoReal::emitir($ticket, 'creado');
+
+        return $ticket;
     }
 
     /** Marca como verificado un ticket creado desde el portal sin sesión y arranca su SLA. */
@@ -73,5 +78,6 @@ class CrearTicket
         $this->sla->iniciar($ticket);
         $ticket->save();
         $ticket->eventos()->create(['tipo' => 'verificado', 'cliente_id' => $ticket->cliente_id]);
+        AvisarEnTiempoReal::emitir($ticket, 'creado');
     }
 }
