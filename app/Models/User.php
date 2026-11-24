@@ -59,6 +59,12 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         return $this->belongsTo(Empresa::class);
     }
 
+    /** Cuenta de ejemplo de la demo pública (compartida por todos los visitantes). */
+    public function esCuentaDemo(): bool
+    {
+        return (bool) config('attent.demo') && str_ends_with($this->email, '.test');
+    }
+
     public function esAdmin(): bool
     {
         return $this->rol === Rol::Admin;

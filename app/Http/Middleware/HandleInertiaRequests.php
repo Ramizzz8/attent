@@ -49,7 +49,7 @@ class HandleInertiaRequests extends Middleware
                 'sector' => $empresa->sector->value,
                 'esAdmin' => $request->user('web')->esAdmin(),
             ] : null,
-            'flash' => fn () => ['status' => $request->session()->get('status')],
+            'flash' => fn () => ['status' => $request->session()->get('status'), 'exito' => $request->session()->get('exito')],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

@@ -1,5 +1,6 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import type { CSSProperties, ReactNode } from 'react';
+import { AvisosFlash } from '@/components/avisos-flash';
 import type { Portal } from '@/types/portal';
 
 /**
@@ -61,6 +62,7 @@ export default function PortalLayout({ children }: { children: ReactNode }) {
                     </nav>
                 </div>
             </header>
+            <AvisosFlash />
             <main className="mx-auto max-w-3xl px-4 py-8">{children}</main>
             <footer className="pb-8 text-center text-xs text-muted-foreground">Gestionado con ATTENT</footer>
         </div>

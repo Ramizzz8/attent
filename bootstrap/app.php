@@ -52,6 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\ValidatePostSize::class,
             HandleAppearance::class,
             HandleInertiaRequests::class,
+            \App\Http\Middleware\ProtegerDemo::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
     })
