@@ -21,7 +21,7 @@ class MensajePortalController extends Controller
 
         $enviar->ejecutar($ticket, Auth::guard('cliente')->user(), $datos['cuerpo'], $datos['adjuntos'] ?? []);
 
-        return redirect("/{$empresa->slug}/tickets/{$numero}");
+        return redirect("/{$empresa->slug}/tickets/{$numero}")->with('exito', 'Mensaje enviado.');
     }
 
     public function adjunto(Empresa $empresa, int $adjunto): StreamedResponse

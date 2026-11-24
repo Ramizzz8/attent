@@ -89,6 +89,6 @@ class SoporteItController extends Controller
         }
         $ticket->save();
 
-        return back();
+        return back()->with('exito', "Urgencia actualizada: prioridad {$ticket->prioridad->etiqueta()}.");
     }
 }

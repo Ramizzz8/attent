@@ -21,11 +21,11 @@ class EstadoController extends Controller
         ]);
 
         try {
-            $cambiarEstado->ejecutar($ticket, $datos['destino'], $request->user(), $datos['motivo'] ?? null);
+            $actualizado = $cambiarEstado->ejecutar($ticket, $datos['destino'], $request->user(), $datos['motivo'] ?? null);
         } catch (TransicionNoPermitida $e) {
             throw ValidationException::withMessages(['destino' => $e->getMessage()]);
         }
 
-        return back();
+        return back()->with('exito', "Estado cambiado a «{$actualizado->etiquetaEstado()}».");
     }
 }

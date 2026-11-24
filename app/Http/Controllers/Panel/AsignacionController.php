@@ -24,6 +24,7 @@ class AsignacionController extends Controller
         if ($nuevo === $ticket->asignado_a) {
             return back();
         }
+        $mensaje = $nuevo ? 'Incidencia asignada a '.User::find($nuevo)->name.'.' : 'Asignación quitada.';
 
         $anterior = $ticket->asignado?->name;
         $ticket->update(['asignado_a' => $nuevo]);
@@ -38,6 +39,6 @@ class AsignacionController extends Controller
             $cambiarEstado->ejecutar($ticket, 'asignado', $request->user());
         }
 
-        return back();
+        return back()->with('exito', $mensaje);
     }
 }

@@ -22,9 +22,10 @@ class MensajeController extends Controller
             ...Adjuntos::reglas(),
         ]);
 
-        $enviar->ejecutar($ticket, $request->user(), $datos['cuerpo'], $datos['adjuntos'] ?? [], (bool) ($datos['interno'] ?? false));
+        $interno = (bool) ($datos['interno'] ?? false);
+        $enviar->ejecutar($ticket, $request->user(), $datos['cuerpo'], $datos['adjuntos'] ?? [], $interno);
 
-        return back();
+        return back()->with('exito', $interno ? 'Nota interna guardada.' : 'Mensaje enviado al cliente.');
     }
 
     public function adjunto(int $adjunto): StreamedResponse

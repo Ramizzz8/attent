@@ -98,6 +98,6 @@ class FincasController extends Controller
             throw ValidationException::withMessages(['proveedor_id' => $e->getMessage()]);
         }
 
-        return back();
+        return back()->with('exito', "Proveedor asignado: {$proveedor->nombre}. Le hemos enviado el enlace.");
     }
 }

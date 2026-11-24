@@ -35,6 +35,6 @@ class PresupuestoController extends Controller
             throw ValidationException::withMessages(['lineas' => $e->getMessage()]);
         }
 
-        return back();
+        return back()->with('exito', 'Presupuesto enviado al cliente.');
     }
 }

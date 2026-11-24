@@ -30,6 +30,6 @@ class PresupuestoPortalController extends Controller
 
         $responder->ejecutar($presupuesto, Auth::guard('cliente')->user(), (bool) $datos['aprueba'], $datos['comentario'] ?? null);
 
-        return redirect("/{$empresa->slug}/tickets/{$numero}");
+        return redirect("/{$empresa->slug}/tickets/{$numero}")->with('exito', $datos['aprueba'] ? 'Presupuesto aprobado. ¡Nos ponemos con ello!' : 'Presupuesto rechazado. El taller se pondrá en contacto contigo.');
     }
 }

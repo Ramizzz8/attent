@@ -100,7 +100,7 @@ class TicketPortalController extends Controller
 
         $reabrir->ejecutar($ticket, Auth::guard('cliente')->user(), $datos['motivo']);
 
-        return redirect("/{$empresa->slug}/tickets/{$numero}");
+        return redirect("/{$empresa->slug}/tickets/{$numero}")->with('exito', 'Incidencia reabierta. El equipo ya lo sabe.');
     }
 
     public function valorar(Request $request, Empresa $empresa, int $numero): RedirectResponse
@@ -118,7 +118,7 @@ class TicketPortalController extends Controller
 
         $ticket->update(['valoracion' => $datos['valoracion'], 'valoracion_comentario' => $datos['comentario'] ?? null]);
 
-        return redirect("/{$empresa->slug}/tickets/{$numero}")->with('status', '¡Gracias por tu valoración!');
+        return redirect("/{$empresa->slug}/tickets/{$numero}")->with('exito', '¡Gracias por tu valoración!');
     }
 
     public static function ticketDelCliente(int $numero): Ticket

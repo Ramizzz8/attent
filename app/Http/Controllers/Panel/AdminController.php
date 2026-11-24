@@ -140,7 +140,7 @@ class AdminController extends Controller
             ], fn ($v) => $v !== null && $v !== ''),
         ])->save();
 
-        return back()->with('status', 'Ajustes guardados.');
+        return back()->with('exito', 'Ajustes guardados.');
     }
 
     private function empleadoDeMiEmpresa(int $id): User
