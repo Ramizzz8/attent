@@ -60,6 +60,12 @@ class Ticket extends Model
         return $this->hasMany(TicketEvento::class);
     }
 
+    /** @return BelongsTo<Vehiculo, $this> */
+    public function vehiculo(): BelongsTo
+    {
+        return $this->belongsTo(Vehiculo::class);
+    }
+
     /** @return HasMany<Mensaje, $this> */
     public function mensajes(): HasMany
     {

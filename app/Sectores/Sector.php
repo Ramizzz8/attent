@@ -53,6 +53,14 @@ interface Sector
     /** @return array<string, string> */
     public function categorias(): array;
 
+    /**
+     * Se ejecuta al crear el ticket, antes de guardarlo: crea o enlaza las entidades del sector
+     * (vehículo, equipo…).
+     *
+     * @param  array<string, mixed>  $datos
+     */
+    public function antesDeGuardar(Ticket $ticket, \App\Models\Cliente $cliente, array $datos): void;
+
     /** @return array<string, mixed> reglas de validación propias del formulario del portal */
     public function reglasFormulario(): array;
 }

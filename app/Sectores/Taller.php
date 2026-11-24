@@ -4,8 +4,10 @@ namespace App\Sectores;
 
 use App\Enums\Prioridad;
 use App\Enums\SectorClave;
+use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Ticket;
+use App\Models\Vehiculo;
 
 class Taller extends SectorBase
 {
@@ -95,6 +97,30 @@ class Taller extends SectorBase
     {
         // SLA de diagnóstico: 48 h desde que se recibe el vehículo.
         return ['baja' => 2880, 'media' => 2880, 'alta' => 2880, 'urgente' => 2880];
+    }
+
+    /** Busca el vehículo por matrícula normalizada o lo crea, y lo enlaza al ticket. */
+    public function antesDeGuardar(Ticket $ticket, Cliente $cliente, array $datos): void
+    {
+        $d = $datos['datos'] ?? [];
+        if (blank($d['matricula'] ?? null)) {
+            return;
+        }
+
+        $vehiculo = Vehiculo::firstOrNew([
+            'empresa_id' => $ticket->empresa_id,
+            'matricula' => Vehiculo::normalizarMatricula($d['matricula']),
+        ]);
+        // Si el coche cambió de dueño, pasa a ser del cliente actual.
+        $vehiculo->cliente_id = $cliente->id;
+        $vehiculo->fill(array_filter([
+            'marca' => $d['marca'] ?? null,
+            'modelo' => $d['modelo'] ?? null,
+            'km' => isset($d['km']) && $d['km'] !== '' ? (int) $d['km'] : null,
+        ], fn ($v) => $v !== null && $v !== ''));
+        $vehiculo->save();
+
+        $ticket->vehiculo_id = $vehiculo->id;
     }
 
     public function reglasFormulario(): array

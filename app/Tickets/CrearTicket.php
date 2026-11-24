@@ -48,6 +48,8 @@ class CrearTicket
             ]);
             $ticket->setRelation('empresa', $empresa);
 
+            $sector->antesDeGuardar($ticket, $cliente, $datos);
+
             if ($verificado) {
                 $ticket->verificado_en = now();
                 $this->sla->iniciar($ticket);

@@ -39,6 +39,10 @@ final class VistaTicketPortal
                     'fecha' => $m->created_at->toIso8601String(),
                     'adjuntos' => $m->adjuntos->map(fn (Adjunto $a) => $a->resumen()),
                 ]),
+            'presupuesto' => ($p = $ticket->presupuestoVigente()?->load('lineas')) ? [
+                ...$p->resumen(),
+                'puedeResponder' => $p->estado === 'pendiente' && $ticket->estado === 'presupuesto_enviado',
+            ] : null,
             'historial' => $ticket->eventos()
                 ->where('tipo', 'estado')
                 ->orderBy('id')

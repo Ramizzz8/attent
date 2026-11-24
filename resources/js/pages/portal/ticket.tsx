@@ -2,6 +2,8 @@ import { Head } from '@inertiajs/react';
 import { Conversacion, ListaAdjuntos } from '@/components/conversacion';
 import type { AdjuntoResumen, MensajeVista } from '@/components/conversacion';
 import { EstadoPill, fecha } from '@/components/portal/estado-pill';
+import { PresupuestoPortal } from '@/components/sectores/taller/presupuesto-portal';
+import type { PresupuestoVista } from '@/components/sectores/taller/presupuesto';
 import { usePortalUrl } from '@/hooks/use-portal';
 
 export type TicketPortal = {
@@ -17,6 +19,7 @@ export type TicketPortal = {
     historial: { estado: string; fecha: string }[];
     adjuntos: AdjuntoResumen[];
     mensajes: MensajeVista[];
+    presupuesto?: PresupuestoVista | null;
 };
 
 export default function Ticket({ ticket }: { ticket: TicketPortal }) {
@@ -49,6 +52,8 @@ export default function Ticket({ ticket }: { ticket: TicketPortal }) {
                     )}
                     <ListaAdjuntos adjuntos={ticket.adjuntos} urlBase={url('adjuntos')} />
                 </section>
+
+                {ticket.presupuesto && <PresupuestoPortal numero={ticket.numero} presupuesto={ticket.presupuesto} />}
 
                 <Conversacion
                     mensajes={ticket.mensajes}

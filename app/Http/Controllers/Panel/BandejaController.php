@@ -20,7 +20,7 @@ class BandejaController extends Controller
         $sector = $empresa->motor();
         $filtros = $request->only(['estado', 'prioridad', 'asignado', 'categoria', 'sla', 'q', 'edificio_id']);
 
-        $query = Ticket::query()->verificados()->with(['cliente', 'asignado']);
+        $query = Ticket::query()->verificados()->with(['cliente', 'asignado', ...OpcionesSector::relaciones($empresa)]);
 
         $estado = $filtros['estado'] ?? 'abiertos';
         match (true) {
@@ -38,7 +38,7 @@ class BandejaController extends Controller
             default => $q->where('asignado_a', (int) $a),
         });
         $query->when($filtros['sla'] ?? null, fn (Builder $q, $s) => $this->filtrarSla($q, $s, $empresa));
-        $query->when($filtros['q'] ?? null, fn (Builder $q, $texto) => $this->buscar($q, trim($texto)));
+        $query->when($filtros['q'] ?? null, fn (Builder $q, $texto) => $this->buscar($q, trim($texto), $empresa));
 
         $tickets = $query
             ->orderByRaw('sla_vence_en is null')
@@ -58,6 +58,7 @@ class BandejaController extends Controller
                 'sla' => $t->estadoSla(),
                 'slaVence' => $t->sla_vence_en?->toIso8601String(),
                 'creado' => $t->created_at->toIso8601String(),
+                'extra' => OpcionesSector::extraFila($t),
             ]);
 
         return Inertia::render('panel/bandeja', [
@@ -95,16 +96,16 @@ class BandejaController extends Controller
         }
     }
 
-    private function buscar(Builder $q, string $texto): void
+    private function buscar(Builder $q, string $texto, $empresa): void
     {
-        $q->where(function (Builder $q) use ($texto) {
+        $q->where(function (Builder $q) use ($texto, $empresa) {
             if (ctype_digit($texto)) {
                 $q->orWhere('numero', (int) $texto);
             }
             $like = '%'.mb_strtolower($texto).'%';
             $q->orWhereRaw('lower(asunto) like ?', [$like])
                 ->orWhereHas('cliente', fn (Builder $c) => $c->whereRaw('lower(nombre) like ?', [$like])->orWhereRaw('lower(email) like ?', [$like]));
-            OpcionesSector::buscar($q, $like);
+            OpcionesSector::buscar($q, $texto, $empresa);
         });
     }
 }

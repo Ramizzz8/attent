@@ -43,6 +43,8 @@ abstract class SectorBase implements Sector
         return null;
     }
 
+    public function antesDeGuardar(Ticket $ticket, \App\Models\Cliente $cliente, array $datos): void {}
+
     public function reglasFormulario(): array
     {
         return [];
