@@ -48,6 +48,11 @@ class Fincas extends SectorBase
         ];
     }
 
+    public function recorrido(): array
+    {
+        return ['reportada', 'en_revision', 'asignada_proveedor', 'visita_programada', 'resuelta'];
+    }
+
     public function siguientePaso(): array
     {
         return [

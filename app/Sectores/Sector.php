@@ -26,6 +26,9 @@ interface Sector
     /** @return array<string, string> estado => transición que se ofrece como botón principal */
     public function siguientePaso(): array;
 
+    /** @return list<string> recorrido típico de una incidencia, el que ve el cliente en su barra de progreso */
+    public function recorrido(): array;
+
     /** @return array<string, list<string>> avances permitidos al empleado */
     public function transiciones(): array;
 

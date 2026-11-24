@@ -46,6 +46,11 @@ class SoporteIt extends SectorBase
         ];
     }
 
+    public function recorrido(): array
+    {
+        return ['nuevo', 'asignado', 'en_curso', 'resuelto', 'cerrado'];
+    }
+
     public function siguientePaso(): array
     {
         return [

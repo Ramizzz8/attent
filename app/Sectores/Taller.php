@@ -51,6 +51,11 @@ class Taller extends SectorBase
         ];
     }
 
+    public function recorrido(): array
+    {
+        return ['recibido', 'en_diagnostico', 'presupuesto_enviado', 'en_reparacion', 'listo_recoger', 'entregado'];
+    }
+
     public function siguientePaso(): array
     {
         return [

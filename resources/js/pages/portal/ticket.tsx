@@ -2,6 +2,8 @@ import { Head } from '@inertiajs/react';
 import { Conversacion, ListaAdjuntos } from '@/components/conversacion';
 import type { AdjuntoResumen, MensajeVista } from '@/components/conversacion';
 import { EstadoPill, fecha } from '@/components/portal/estado-pill';
+import { Progreso } from '@/components/portal/progreso';
+import type { PasoProgreso } from '@/components/portal/progreso';
 import { Reabrir } from '@/components/portal/reabrir';
 import { Estrellas, Valorar } from '@/components/portal/valorar';
 import { PresupuestoPortal } from '@/components/sectores/taller/presupuesto-portal';
@@ -25,6 +27,8 @@ export type TicketPortal = {
     adjuntos: AdjuntoResumen[];
     mensajes: MensajeVista[];
     presupuesto?: PresupuestoVista | null;
+    progreso: PasoProgreso[];
+    accionPendiente: { tipo: 'presupuesto' | 'responder' | 'valorar'; texto: string } | null;
 };
 
 export default function Ticket({ ticket }: { ticket: TicketPortal }) {
@@ -44,7 +48,10 @@ export default function Ticket({ ticket }: { ticket: TicketPortal }) {
                         </div>
                         <EstadoPill>{ticket.estadoEtiqueta}</EstadoPill>
                     </div>
-                    <p className="mt-4 whitespace-pre-line">{ticket.descripcion}</p>
+                    <div className="mt-5">
+                        <Progreso pasos={ticket.progreso} />
+                    </div>
+                    <p className="mt-5 whitespace-pre-line">{ticket.descripcion}</p>
                     {Object.keys(ticket.datos).length > 0 && (
                         <dl className="mt-4 grid grid-cols-2 gap-2 text-sm sm:grid-cols-4">
                             {Object.entries(ticket.datos).map(([k, v]) => (
@@ -57,6 +64,19 @@ export default function Ticket({ ticket }: { ticket: TicketPortal }) {
                     )}
                     <ListaAdjuntos adjuntos={ticket.adjuntos} urlBase={url('adjuntos')} />
                 </section>
+
+                {ticket.accionPendiente && (
+                    <section
+                        aria-labelledby="accion-titulo"
+                        className="rounded-xl border-2 bg-background p-5"
+                        style={{ borderColor: 'var(--marca)' }}
+                    >
+                        <h2 id="accion-titulo" className="font-semibold" style={{ color: 'var(--marca)' }}>
+                            Lo que tienes que hacer ahora
+                        </h2>
+                        <p className="mt-1">{ticket.accionPendiente.texto}</p>
+                    </section>
+                )}
 
                 {ticket.puedeValorar && <Valorar numero={ticket.numero} />}
                 {ticket.valoracion && (
