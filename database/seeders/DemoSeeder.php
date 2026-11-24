@@ -13,8 +13,8 @@ class DemoSeeder extends Seeder
 {
     public function run(): void
     {
-        // Los emails de la demo no se envían ni se encolan.
-        config(['queue.default' => 'sync', 'mail.default' => 'array']);
+        // Al cargar la demo no se envían emails ni avisos en tiempo real (Reverb puede no estar en marcha aún).
+        config(['queue.default' => 'sync', 'mail.default' => 'array', 'broadcasting.default' => 'null']);
 
         try {
             $this->call([TallerDemoSeeder::class, FincasDemoSeeder::class, SoporteItDemoSeeder::class]);

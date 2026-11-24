@@ -30,6 +30,22 @@ it('hay incidencias con plazo vencido, mensajes, presupuestos y afectados', func
         ->and(Illuminate\Support\Facades\DB::table('ticket_afectados')->count())->toBeGreaterThanOrEqual(3);
 });
 
+it('la demo se carga aunque el servidor de tiempo real no esté disponible', function () {
+    config([
+        'broadcasting.default' => 'reverb',
+        'broadcasting.connections.reverb.key' => 'k',
+        'broadcasting.connections.reverb.secret' => 's',
+        'broadcasting.connections.reverb.app_id' => '1',
+        'broadcasting.connections.reverb.options.host' => '127.0.0.1',
+        'broadcasting.connections.reverb.options.port' => 1,
+        'broadcasting.connections.reverb.options.scheme' => 'http',
+    ]);
+
+    $this->seed(DemoSeeder::class);
+
+    expect(Empresa::count())->toBe(3);
+});
+
 it('db:seed (DatabaseSeeder) carga la demo con los eventos de modelo activos', function () {
     $this->seed();
 
