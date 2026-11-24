@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { Conversacion, ListaAdjuntos } from '@/components/conversacion';
 import type { AdjuntoResumen, MensajeVista } from '@/components/conversacion';
 import { EstadoPill, fecha } from '@/components/portal/estado-pill';
+import { Reabrir } from '@/components/portal/reabrir';
 import { PresupuestoPortal } from '@/components/sectores/taller/presupuesto-portal';
 import type { PresupuestoVista } from '@/components/sectores/taller/presupuesto';
 import { usePortalUrl } from '@/hooks/use-portal';
@@ -14,6 +15,7 @@ export type TicketPortal = {
     categoria: string;
     estado: string;
     estadoEtiqueta: string;
+    puedeReabrir: boolean;
     datos: Record<string, string | number>;
     creado: string;
     historial: { estado: string; fecha: string }[];
@@ -52,6 +54,8 @@ export default function Ticket({ ticket }: { ticket: TicketPortal }) {
                     )}
                     <ListaAdjuntos adjuntos={ticket.adjuntos} urlBase={url('adjuntos')} />
                 </section>
+
+                {ticket.puedeReabrir && <Reabrir numero={ticket.numero} />}
 
                 {ticket.presupuesto && <PresupuestoPortal numero={ticket.numero} presupuesto={ticket.presupuesto} />}
 

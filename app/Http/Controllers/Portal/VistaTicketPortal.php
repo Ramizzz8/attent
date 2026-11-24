@@ -6,6 +6,7 @@ use App\Models\Adjunto;
 use App\Models\Cliente;
 use App\Models\Mensaje;
 use App\Models\Ticket;
+use App\Tickets\ReabrirTicket;
 
 /** Lo que el cliente puede ver de su ticket (nunca notas internas ni datos del equipo). */
 final class VistaTicketPortal
@@ -23,6 +24,7 @@ final class VistaTicketPortal
             'categoria' => $sector->categorias()[$ticket->categoria] ?? $ticket->categoria,
             'estado' => $ticket->estado,
             'estadoEtiqueta' => $ticket->etiquetaEstado(),
+            'puedeReabrir' => ReabrirTicket::puede($ticket) && $ticket->cliente_id === \Illuminate\Support\Facades\Auth::guard('cliente')->id(),
             'datos' => $ticket->datos ?? [],
             'creado' => $ticket->created_at->toIso8601String(),
             'adjuntos' => $ticket->adjuntos()->whereNull('mensaje_id')->get()->map(fn (Adjunto $a) => $a->resumen()),

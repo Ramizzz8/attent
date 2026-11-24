@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Notifications\ConfirmarTicket;
 use App\Tickets\Adjuntos;
 use App\Tickets\CrearTicket;
+use App\Tickets\ReabrirTicket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -88,6 +89,16 @@ class TicketPortalController extends Controller
         return Inertia::render('portal/ticket', [
             'ticket' => VistaTicketPortal::datos($ticket),
         ]);
+    }
+
+    public function reabrir(Request $request, Empresa $empresa, int $numero, ReabrirTicket $reabrir): RedirectResponse
+    {
+        $ticket = self::ticketDelCliente($numero);
+        $datos = $request->validate(['motivo' => ['required', 'string', 'max:1000']]);
+
+        $reabrir->ejecutar($ticket, Auth::guard('cliente')->user(), $datos['motivo']);
+
+        return redirect("/{$empresa->slug}/tickets/{$numero}");
     }
 
     public static function ticketDelCliente(int $numero): Ticket
