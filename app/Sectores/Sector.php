@@ -20,6 +20,12 @@ interface Sector
 
     public function estadoInicial(): string;
 
+    /** @return array<string, string> qué significa cada estado, en una frase para el equipo */
+    public function descripciones(): array;
+
+    /** @return array<string, string> estado => transición que se ofrece como botón principal */
+    public function siguientePaso(): array;
+
     /** @return array<string, list<string>> avances permitidos al empleado */
     public function transiciones(): array;
 

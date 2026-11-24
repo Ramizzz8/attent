@@ -87,3 +87,10 @@ it('lista los destinos posibles incluido el retroceso', function () {
     expect(collect(app(CambiarEstado::class)->destinosPosibles($t))->map(fn ($d) => [$d['estado'], $d['retroceso']])->all())
         ->toBe([['pendiente_usuario', false], ['resuelto', false], ['asignado', true]]);
 });
+
+it('marca como principal el siguiente paso lógico del sector', function () {
+    $t = cambiar(Ticket::factory()->soporteIt()->create(['estado' => 'asignado', 'asignado_a' => User::factory()]), 'en_curso');
+
+    expect(collect(app(CambiarEstado::class)->destinosPosibles($t))->map(fn ($d) => [$d['estado'], $d['principal']])->all())
+        ->toBe([['pendiente_usuario', false], ['resuelto', true], ['asignado', false]]);
+});

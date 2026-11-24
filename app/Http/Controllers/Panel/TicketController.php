@@ -30,6 +30,7 @@ class TicketController extends Controller
                 'categoria' => $sector->categorias()[$ticket->categoria] ?? $ticket->categoria,
                 'estado' => $ticket->estado,
                 'estadoEtiqueta' => $ticket->etiquetaEstado(),
+                'estadoDescripcion' => $sector->descripciones()[$ticket->estado] ?? null,
                 'prioridad' => $ticket->prioridad->value,
                 'datos' => $ticket->datos ?? [],
                 'verificado' => $ticket->verificado_en !== null,

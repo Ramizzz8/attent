@@ -43,3 +43,17 @@ it('prioridad sube un nivel sin pasar de urgente', function () {
         ->and(Prioridad::Alta->subir())->toBe(Prioridad::Urgente)
         ->and(Prioridad::Urgente->subir())->toBe(Prioridad::Urgente);
 });
+
+it('cada estado de cada sector tiene descripción', function (SectorClave $clave) {
+    $s = Sectores::para($clave);
+
+    expect(array_keys($s->descripciones()))->toEqualCanonicalizing(array_keys($s->estados()));
+})->with('sectores');
+
+it('el siguiente paso solo apunta a transiciones permitidas', function (SectorClave $clave) {
+    $s = Sectores::para($clave);
+
+    foreach ($s->siguientePaso() as $desde => $hacia) {
+        expect($s->transiciones()[$desde] ?? [])->toContain($hacia);
+    }
+})->with('sectores');

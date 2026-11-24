@@ -35,6 +35,29 @@ class Fincas extends SectorBase
         return 'reportada';
     }
 
+    public function descripciones(): array
+    {
+        return [
+            'reportada' => 'Un vecino ha avisado y nadie lo ha revisado todavía.',
+            'en_revision' => 'La administración está comprobando el aviso para decidir qué proveedor lo arregla.',
+            'asignada_proveedor' => 'El proveedor tiene la incidencia y debe programar la visita.',
+            'visita_programada' => 'El proveedor ya tiene fecha para ir al edificio.',
+            'resuelta' => 'El problema está arreglado. Los vecinos pueden reabrirla durante 7 días.',
+            'cerrada' => 'Incidencia terminada.',
+            'descartada' => 'No requiere actuación de la administración (el motivo queda en el historial).',
+        ];
+    }
+
+    public function siguientePaso(): array
+    {
+        return [
+            'reportada' => 'en_revision',
+            'asignada_proveedor' => 'visita_programada',
+            'visita_programada' => 'resuelta',
+            'resuelta' => 'cerrada',
+        ];
+    }
+
     public function transiciones(): array
     {
         return [

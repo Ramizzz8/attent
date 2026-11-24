@@ -34,6 +34,28 @@ class SoporteIt extends SectorBase
         return 'nuevo';
     }
 
+    public function descripciones(): array
+    {
+        return [
+            'nuevo' => 'Acaba de llegar y nadie se la ha asignado.',
+            'asignado' => 'Un técnico la tiene asignada pero aún no ha empezado.',
+            'en_curso' => 'El técnico está trabajando en ella.',
+            'pendiente_usuario' => 'Se espera una respuesta de quien la abrió. El plazo está en pausa.',
+            'resuelto' => 'Está solucionada. Se cerrará sola si nadie la reabre en 7 días.',
+            'cerrado' => 'Incidencia terminada.',
+        ];
+    }
+
+    public function siguientePaso(): array
+    {
+        return [
+            'asignado' => 'en_curso',
+            'en_curso' => 'resuelto',
+            'pendiente_usuario' => 'en_curso',
+            'resuelto' => 'cerrado',
+        ];
+    }
+
     public function transiciones(): array
     {
         return [

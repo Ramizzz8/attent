@@ -36,6 +36,33 @@ class Taller extends SectorBase
         return 'recibido';
     }
 
+    public function descripciones(): array
+    {
+        return [
+            'recibido' => 'El vehículo ha llegado y espera a que alguien lo revise.',
+            'en_diagnostico' => 'Un mecánico está buscando la avería para preparar el presupuesto.',
+            'presupuesto_enviado' => 'El cliente tiene el presupuesto y debe aprobarlo o rechazarlo. El plazo está en pausa.',
+            'aprobado' => 'El cliente ha dado el sí: ya se puede empezar a reparar.',
+            'rechazado' => 'El cliente no quiere la reparación. Envía otro presupuesto o deja el coche listo para recoger.',
+            'en_reparacion' => 'El vehículo se está reparando.',
+            'esperando_piezas' => 'La reparación espera a que lleguen piezas. El plazo está en pausa.',
+            'listo_recoger' => 'El trabajo está hecho y el cliente puede pasar a por su vehículo.',
+            'entregado' => 'El cliente ha recogido el vehículo. Puede reabrir la incidencia durante 7 días.',
+        ];
+    }
+
+    public function siguientePaso(): array
+    {
+        return [
+            'recibido' => 'en_diagnostico',
+            'aprobado' => 'en_reparacion',
+            'en_reparacion' => 'listo_recoger',
+            'esperando_piezas' => 'en_reparacion',
+            'rechazado' => 'listo_recoger',
+            'listo_recoger' => 'entregado',
+        ];
+    }
+
     public function transiciones(): array
     {
         return [

@@ -1,5 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, Undo2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Undo2 } from 'lucide-react';
 import { useState } from 'react';
 import { Conversacion, ListaAdjuntos } from '@/components/conversacion';
 import type { AdjuntoResumen, MensajeVista } from '@/components/conversacion';
@@ -22,6 +22,7 @@ export type TicketPanel = {
     categoria: string;
     estado: string;
     estadoEtiqueta: string;
+    estadoDescripcion: string | null;
     prioridad: string;
     datos: Record<string, string | number>;
     verificado: boolean;
@@ -40,7 +41,7 @@ export type TicketPanel = {
     [modulo: string]: unknown;
 };
 
-type Destino = { estado: string; etiqueta: string; retroceso: boolean };
+type Destino = { estado: string; etiqueta: string; retroceso: boolean; principal: boolean };
 
 function Tarjeta({ titulo, children }: { titulo: string; children: React.ReactNode }) {
     return (
@@ -147,18 +148,40 @@ export default function TicketPanelPage({ ticket, destinos, empleados }: { ticke
 
                 <aside className="space-y-4">
                     <Tarjeta titulo="Estado">
-                        <p className="mb-3">
+                        <p className="mb-1">
                             <EstadoBadge>{ticket.estadoEtiqueta}</EstadoBadge>
                         </p>
-                        <div className="flex flex-wrap gap-2">
-                            {destinos.map((d) => (
-                                <Button key={d.estado} size="sm" variant={d.retroceso ? 'outline' : 'default'} onClick={() => cambiarEstado(d)}>
-                                    {d.retroceso && <Undo2 className="h-3 w-3" />}
-                                    {d.etiqueta}
+                        {ticket.estadoDescripcion && <p className="mb-4 text-sm text-muted-foreground">{ticket.estadoDescripcion}</p>}
+                        {destinos
+                            .filter((d) => d.principal)
+                            .map((d) => (
+                                <Button key={d.estado} className="mb-3 w-full justify-between" size="lg" onClick={() => cambiarEstado(d)}>
+                                    Pasar a «{d.etiqueta}»
+                                    <ArrowRight className="h-4 w-4" />
                                 </Button>
                             ))}
-                            {destinos.length === 0 && <p className="text-sm text-muted-foreground">Sin acciones disponibles.</p>}
-                        </div>
+                        {destinos.some((d) => !d.principal) && (
+                            <>
+                                {destinos.some((d) => d.principal) && <p className="mb-2 text-xs text-muted-foreground">Otras opciones</p>}
+                                <div className="flex flex-wrap gap-2">
+                                    {destinos
+                                        .filter((d) => !d.principal)
+                                        .map((d) => (
+                                            <Button key={d.estado} size="sm" variant="outline" onClick={() => cambiarEstado(d)}>
+                                                {d.retroceso && <Undo2 className="h-3 w-3" />}
+                                                {d.retroceso ? `Volver a «${d.etiqueta}»` : d.etiqueta}
+                                            </Button>
+                                        ))}
+                                </div>
+                            </>
+                        )}
+                        {destinos.length === 0 && (
+                            <p className="text-sm text-muted-foreground">
+                                {ticket.estado === 'presupuesto_enviado'
+                                    ? 'Esperando a que el cliente responda al presupuesto.'
+                                    : 'No hay cambios de estado desde aquí: usa las acciones de esta incidencia (presupuesto, proveedor o asignación).'}
+                            </p>
+                        )}
                         {pidiendoMotivo && (
                             <div className="mt-3 space-y-2">
                                 <Input placeholder="Motivo para volver atrás" value={motivo} onChange={(e) => setMotivo(e.target.value)} />

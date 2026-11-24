@@ -76,7 +76,7 @@ class CambiarEstado
     /**
      * Destinos que se ofrecen al empleado en el panel.
      *
-     * @return list<array{estado: string, etiqueta: string, retroceso: bool}>
+     * @return list<array{estado: string, etiqueta: string, retroceso: bool, principal: bool}>
      */
     public function destinosPosibles(Ticket $ticket): array
     {
@@ -85,13 +85,18 @@ class CambiarEstado
 
         foreach ($sector->transiciones()[$ticket->estado] ?? [] as $estado) {
             if (! in_array($estado, $sector->estadosSoloSistema(), true)) {
-                $destinos[] = ['estado' => $estado, 'etiqueta' => $sector->estados()[$estado], 'retroceso' => false];
+                $destinos[] = [
+                    'estado' => $estado,
+                    'etiqueta' => $sector->estados()[$estado],
+                    'retroceso' => false,
+                    'principal' => ($sector->siguientePaso()[$ticket->estado] ?? null) === $estado,
+                ];
             }
         }
 
         $anterior = $this->ultimoCambio($ticket)?->de;
         if ($anterior !== null && $this->esRetroceso($ticket, $anterior)) {
-            $destinos[] = ['estado' => $anterior, 'etiqueta' => $sector->estados()[$anterior], 'retroceso' => true];
+            $destinos[] = ['estado' => $anterior, 'etiqueta' => $sector->estados()[$anterior], 'retroceso' => true, 'principal' => false];
         }
 
         return $destinos;
