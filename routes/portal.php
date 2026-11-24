@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Portal\AccesoController;
+use App\Http\Controllers\Portal\MensajePortalController;
 use App\Http\Controllers\Portal\PortalController;
 use App\Http\Controllers\Portal\TicketPortalController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,8 @@ Route::prefix('{empresa}')
         Route::middleware('cliente.portal')->group(function () {
             Route::get('mis-tickets', [TicketPortalController::class, 'index'])->name('tickets.index');
             Route::get('tickets/{numero}', [TicketPortalController::class, 'show'])->whereNumber('numero')->name('tickets.show');
+            Route::post('tickets/{numero}/mensajes', [MensajePortalController::class, 'store'])->whereNumber('numero')->middleware('throttle:20,1')->name('mensajes.store');
+            Route::get('adjuntos/{adjunto}', [MensajePortalController::class, 'adjunto'])->whereNumber('adjunto')->name('adjuntos.show');
             Route::get('cuenta', [AccesoController::class, 'cuenta'])->name('cuenta');
             Route::post('cuenta/password', [AccesoController::class, 'password'])->name('cuenta.password');
             Route::post('salir', [AccesoController::class, 'salir'])->name('salir');

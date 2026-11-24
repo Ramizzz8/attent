@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Empresa;
 use App\Models\Ticket;
 use App\Notifications\ConfirmarTicket;
+use App\Tickets\Adjuntos;
 use App\Tickets\CrearTicket;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,7 @@ class TicketPortalController extends Controller
             'descripcion' => ['required', 'string', 'max:5000'],
             'categoria' => ['required', Rule::in(array_keys($sector->categorias()))],
             ...$sector->reglasFormulario(),
+            ...Adjuntos::reglas(),
         ]);
 
         if ($cliente === null) {
@@ -50,6 +52,7 @@ class TicketPortalController extends Controller
         }
 
         $ticket = $crear->ejecutar($empresa, $cliente, $validado, verificado: Auth::guard('cliente')->check());
+        Adjuntos::guardar($ticket, null, $validado['adjuntos'] ?? []);
 
         if ($ticket->verificado_en === null) {
             $cliente->notify(new ConfirmarTicket($ticket));
