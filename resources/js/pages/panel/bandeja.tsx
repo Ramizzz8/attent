@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { claseSelect } from '@/components/portal/campo';
+import { GuiaDemo } from '@/components/panel/guia-demo';
 import { EstadoBadge, PrioridadBadge, relativo, SlaBadge } from '@/components/panel/insignias';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -101,6 +102,8 @@ export default function Bandeja({
                         <Input className="pl-8" placeholder="Buscar por número, asunto, cliente…" value={q} onChange={(e) => setQ(e.target.value)} />
                     </form>
                 </div>
+
+                <GuiaDemo />
 
                 <div className="flex flex-wrap gap-2" aria-label="Filtros rápidos">
                     {(
