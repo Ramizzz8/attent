@@ -17,7 +17,7 @@ export function CamposSoporteIt({ form, extra }: PropsCamposSector) {
 
     return (
         <fieldset className="grid gap-4 sm:grid-cols-2">
-            <legend className="mb-2 text-sm font-medium text-muted-foreground">Equipo y alcance</legend>
+            <legend className="mb-2 text-sm font-medium">Equipo y alcance</legend>
             <Campo
                 id="equipo"
                 etiqueta="Código del equipo (opcional)"
@@ -40,7 +40,7 @@ export function CamposSoporteIt({ form, extra }: PropsCamposSector) {
                     ))}
                 </datalist>
             </Campo>
-            <Campo id="impacto" etiqueta="¿A quién afecta?" error={errores.impacto}>
+            <Campo id="impacto" etiqueta="¿A quién afecta?" obligatorio error={errores.impacto}>
                 <select id="impacto" className={claseSelect} value={form.data.impacto} onChange={(e) => form.setData('impacto', e.target.value)} required>
                     <option value="">Elige una opción</option>
                     {IMPACTOS.map((i) => (

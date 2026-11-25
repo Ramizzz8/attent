@@ -74,8 +74,8 @@ export function CamposFincas({ form, extra }: PropsCamposSector) {
     return (
         <>
             <fieldset className="grid gap-4 sm:grid-cols-3">
-                <legend className="mb-2 text-sm font-medium text-muted-foreground">¿Dónde es?</legend>
-                <Campo id="edificio" etiqueta="Edificio" error={errores.edificio_id}>
+                <legend className="mb-2 text-sm font-medium">¿Dónde es?</legend>
+                <Campo id="edificio" etiqueta="Edificio" obligatorio error={errores.edificio_id}>
                     <select
                         id="edificio"
                         className={claseSelect}
@@ -91,7 +91,7 @@ export function CamposFincas({ form, extra }: PropsCamposSector) {
                         ))}
                     </select>
                 </Campo>
-                <Campo id="zona" etiqueta="Zona" error={errores.zona_id}>
+                <Campo id="zona" etiqueta="Zona" obligatorio error={errores.zona_id}>
                     <select
                         id="zona"
                         className={claseSelect}
@@ -108,7 +108,7 @@ export function CamposFincas({ form, extra }: PropsCamposSector) {
                         ))}
                     </select>
                 </Campo>
-                <Campo id="vivienda" etiqueta="Tu piso y puerta" error={errores['datos.vivienda']}>
+                <Campo id="vivienda" etiqueta="Tu piso y puerta" obligatorio error={errores['datos.vivienda']}>
                     <Input id="vivienda" value={String(form.data.datos.vivienda ?? '')} onChange={(e) => setDato(form, 'vivienda', e.target.value)} placeholder="3.º B" required />
                 </Campo>
             </fieldset>

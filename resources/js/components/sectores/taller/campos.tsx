@@ -9,8 +9,8 @@ export function CamposTaller({ form }: PropsCamposSector) {
 
     return (
         <fieldset className="grid gap-4 sm:grid-cols-2">
-            <legend className="mb-2 text-sm font-medium text-muted-foreground">Tu vehículo</legend>
-            <Campo id="matricula" etiqueta="Matrícula" error={errores['datos.matricula']}>
+            <legend className="mb-2 text-sm font-medium">Tu vehículo</legend>
+            <Campo id="matricula" etiqueta="Matrícula" obligatorio error={errores['datos.matricula']}>
                 <Input
                     id="matricula"
                     className="uppercase"

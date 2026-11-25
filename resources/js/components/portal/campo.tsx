@@ -8,17 +8,29 @@ export function Campo({
     etiqueta,
     error,
     ayuda,
+    obligatorio,
     children,
 }: {
     id: string;
     etiqueta: string;
     error?: string;
     ayuda?: string;
+    obligatorio?: boolean;
     children: ReactNode;
 }) {
     return (
         <div className="grid gap-1.5">
-            <Label htmlFor={id}>{etiqueta}</Label>
+            <Label htmlFor={id}>
+                {etiqueta}
+                {obligatorio && (
+                    <>
+                        <span className="text-destructive" aria-hidden="true">
+                            *
+                        </span>
+                        <span className="sr-only"> (obligatorio)</span>
+                    </>
+                )}
+            </Label>
             {children}
             {ayuda && <p className="text-xs text-muted-foreground">{ayuda}</p>}
             <InputError message={error} />
