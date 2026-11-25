@@ -3,6 +3,8 @@
 namespace App\Portal;
 
 use App\Models\Ticket;
+use App\Sectores\Sector;
+use App\Tickets\ReabrirTicket;
 
 /** Lo que ve el cliente sobre el avance de su incidencia y lo que le toca hacer. */
 final class ProgresoTicket
@@ -16,18 +18,24 @@ final class ProgresoTicket
         $actual = $ticket->estado;
         $item = fn (string $e, string $s) => ['estado' => $e, 'etiqueta' => $etiquetas[$e] ?? $e, 'situacion' => $s];
 
+        // Solo cuenta como hecho lo que de verdad pasó: cada cambio de estado deja un evento.
+        $alcanzados = $ticket->eventos()->where('tipo', 'estado')->pluck('a')->push($sector->estadoInicial())->all();
+        $hechos = fn (array $pasos) => array_map(
+            fn ($e) => $item($e, 'hecho'),
+            array_values(array_filter($pasos, fn ($e) => in_array($e, $alcanzados, true))),
+        );
+
         $posicion = array_search($actual, $recorrido, true);
         if ($posicion !== false) {
-            return array_map(
-                fn ($e, $i) => $item($e, $i < $posicion ? 'hecho' : ($i === $posicion ? 'actual' : 'pendiente')),
-                $recorrido,
-                array_keys($recorrido),
-            );
+            return [
+                ...$hechos(array_slice($recorrido, 0, $posicion)),
+                $item($actual, 'actual'),
+                ...array_map(fn ($e) => $item($e, 'pendiente'), array_slice($recorrido, $posicion + 1)),
+            ];
         }
 
         // Estado fuera del recorrido típico (rechazado, esperando piezas, pendiente del usuario, descartada…):
         // va detrás del último estado del recorrido que la incidencia ya alcanzó.
-        $alcanzados = $ticket->eventos()->where('tipo', 'estado')->pluck('a')->push($sector->estadoInicial())->all();
         $ultimo = 0;
         foreach ($recorrido as $i => $e) {
             if (in_array($e, $alcanzados, true)) {
@@ -35,12 +43,15 @@ final class ProgresoTicket
             }
         }
 
-        $pasos = array_map(fn ($e) => $item($e, 'hecho'), array_slice($recorrido, 0, $ultimo + 1));
-        $pasos[] = $item($actual, 'actual');
+        $pasos = [...$hechos(array_slice($recorrido, 0, $ultimo + 1)), $item($actual, 'actual')];
 
         if (! in_array($actual, $sector->estadosTerminados(), true)) {
+            // Solo lo que todavía puede pasar desde aquí (tras rechazar el presupuesto no hay reparación).
+            $alcanzables = self::alcanzables($sector, $actual);
             foreach (array_slice($recorrido, $ultimo + 1) as $e) {
-                $pasos[] = $item($e, 'pendiente');
+                if (in_array($e, $alcanzables, true)) {
+                    $pasos[] = $item($e, 'pendiente');
+                }
             }
         }
 
@@ -61,9 +72,29 @@ final class ProgresoTicket
             ],
             $ticket->puedeValorarse() => [
                 'tipo' => 'valorar',
-                'texto' => '¿Está resuelto? Valora la atención o, si el problema sigue, reabre la incidencia.',
+                'texto' => ReabrirTicket::puede($ticket)
+                    ? '¿Está resuelto? Valora la atención o, si el problema sigue, reabre la incidencia.'
+                    : '¿Está resuelto? Valora la atención que has recibido.',
             ],
             default => null,
         };
+    }
+
+    /** @return list<string> estados a los que se puede llegar desde $desde siguiendo las transiciones del sector */
+    private static function alcanzables(Sector $sector, string $desde): array
+    {
+        $transiciones = $sector->transiciones();
+        $vistos = [];
+        $pendientes = [$desde];
+        while ($pendientes !== []) {
+            foreach ($transiciones[array_pop($pendientes)] ?? [] as $siguiente) {
+                if (! in_array($siguiente, $vistos, true)) {
+                    $vistos[] = $siguiente;
+                    $pendientes[] = $siguiente;
+                }
+            }
+        }
+
+        return $vistos;
     }
 }

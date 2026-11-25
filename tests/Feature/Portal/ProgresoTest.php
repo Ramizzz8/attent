@@ -11,6 +11,7 @@ function situaciones(Ticket $t): array
 
 it('marca los estados hechos, el actual y los pendientes del recorrido', function () {
     $t = Ticket::factory()->taller()->create(['estado' => 'en_diagnostico']);
+    $t->eventos()->create(['tipo' => 'estado', 'de' => 'recibido', 'a' => 'en_diagnostico']);
 
     expect(situaciones($t))->toBe([
         'recibido' => 'hecho', 'en_diagnostico' => 'actual', 'presupuesto_enviado' => 'pendiente',
@@ -26,8 +27,34 @@ it('un estado fuera del recorrido aparece como actual tras lo ya alcanzado', fun
 
     expect(situaciones($t))->toBe([
         'recibido' => 'hecho', 'en_diagnostico' => 'hecho', 'presupuesto_enviado' => 'hecho',
-        'rechazado' => 'actual', 'en_reparacion' => 'pendiente', 'listo_recoger' => 'pendiente', 'entregado' => 'pendiente',
+        'rechazado' => 'actual', 'listo_recoger' => 'pendiente', 'entregado' => 'pendiente',
     ]);
+});
+
+it('no marca como hechos los pasos por los que la incidencia no pasó', function () {
+    $t = Ticket::factory()->fincas()->create(['estado' => 'resuelta']);
+    foreach ([['reportada', 'en_revision'], ['en_revision', 'resuelta']] as [$de, $a]) {
+        $t->eventos()->create(['tipo' => 'estado', 'de' => $de, 'a' => $a]);
+    }
+
+    expect(situaciones($t))->toBe(['reportada' => 'hecho', 'en_revision' => 'hecho', 'resuelta' => 'actual']);
+});
+
+it('tras rechazar el presupuesto no promete la reparación', function () {
+    $t = Ticket::factory()->taller()->create(['estado' => 'rechazado']);
+    foreach ([['recibido', 'en_diagnostico'], ['en_diagnostico', 'presupuesto_enviado'], ['presupuesto_enviado', 'rechazado']] as [$de, $a]) {
+        $t->eventos()->create(['tipo' => 'estado', 'de' => $de, 'a' => $a]);
+    }
+
+    expect(situaciones($t))->not->toHaveKey('en_reparacion');
+});
+
+it('solo sugiere reabrir si todavía se puede', function () {
+    $reciente = Ticket::factory()->soporteIt()->create(['estado' => 'resuelto', 'resuelto_en' => now()]);
+    $antigua = Ticket::factory()->soporteIt()->create(['estado' => 'resuelto', 'resuelto_en' => now()->subDays(10)]);
+
+    expect(ProgresoTicket::accionPendiente($reciente)['texto'])->toContain('reabre')
+        ->and(ProgresoTicket::accionPendiente($antigua)['texto'] ?? '')->not->toContain('reabre');
 });
 
 it('una incidencia descartada termina ahí, sin pendientes', function () {
