@@ -1,4 +1,4 @@
-import { Paperclip } from 'lucide-react';
+import { Paperclip, X } from 'lucide-react';
 
 /** Botón de adjuntar con el mismo texto en todos los navegadores (el control nativo sale en el idioma del navegador). */
 export function SelectorArchivos({
@@ -39,6 +39,17 @@ export function SelectorArchivos({
             <span className="min-w-0 truncate text-sm text-muted-foreground" aria-live="polite">
                 {archivos.length === 0 ? 'Ningún archivo' : archivos.length === 1 ? archivos[0].name : `${archivos.length} archivos`}
             </span>
+            {archivos.length > 0 && (
+                <button
+                    type="button"
+                    onClick={() => onChange([])}
+                    className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                    <X className="size-3.5" aria-hidden="true" />
+                    Quitar
+                    <span className="sr-only"> {archivos.length === 1 ? 'el archivo' : 'los archivos'}</span>
+                </button>
+            )}
         </div>
     );
 }
