@@ -1,4 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
+import { SelectorArchivos } from '@/components/selector-archivos';
 import type { CSSProperties, FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { Campo, claseTextarea } from '@/components/portal/campo';
@@ -109,7 +110,7 @@ export default function TicketProveedor({ empresa, proveedor, ticket, acciones }
                         <Campo id="comentario" etiqueta="¿Qué se ha hecho?" error={resolver.errors.comentario}>
                             <textarea id="comentario" className={claseTextarea} value={resolver.data.comentario} onChange={(e) => resolver.setData('comentario', e.target.value)} required />
                         </Campo>
-                        <Input type="file" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple aria-label="Foto del trabajo" onChange={(e) => resolver.setData('adjuntos', Array.from(e.target.files ?? []))} />
+                        <SelectorArchivos id="adjuntos-trabajo" texto="Añadir foto del trabajo" archivos={resolver.data.adjuntos} onChange={(a) => resolver.setData('adjuntos', a)} />
                         <InputError message={(resolver.errors as Record<string, string>)['adjuntos.0']} />
                         <Boton disabled={resolver.processing}>Marcar como resuelta</Boton>
                     </form>

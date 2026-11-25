@@ -5,6 +5,7 @@ import { Campo, claseTextarea } from '@/components/portal/campo';
 import { PasoFormulario } from '@/components/portal/paso-formulario';
 import { CamposSector } from '@/components/sectores/campos-sector';
 import type { FormularioTicket } from '@/components/sectores/campos-sector';
+import { SelectorArchivos } from '@/components/selector-archivos';
 import { Input } from '@/components/ui/input';
 import { usePortal } from '@/hooks/use-portal';
 import { cn } from '@/lib/utils';
@@ -103,13 +104,7 @@ export default function Nueva({ categorias, ...extra }: { categorias: Opcion[] }
                     error={errores.adjuntos ?? Object.entries(errores).find(([k]) => k.startsWith('adjuntos.'))?.[1]}
                     ayuda="JPG, PNG, WEBP o PDF. Máximo 5 archivos de 5 MB."
                 >
-                    <Input
-                        id="adjuntos"
-                        type="file"
-                        multiple
-                        accept=".jpg,.jpeg,.png,.webp,.pdf"
-                        onChange={(e) => form.setData('adjuntos', Array.from(e.target.files ?? []))}
-                    />
+                    <SelectorArchivos id="adjuntos" texto="Elegir fotos o documentos" archivos={form.data.adjuntos ?? []} onChange={(a) => form.setData('adjuntos', a)} />
                 </Campo>
                 </PasoFormulario>
 

@@ -6,7 +6,7 @@ import type { FormEvent } from 'react';
 import InputError from '@/components/input-error';
 import { claseTextarea } from '@/components/portal/campo';
 import { fecha } from '@/components/portal/estado-pill';
-import { Input } from '@/components/ui/input';
+import { SelectorArchivos } from '@/components/selector-archivos';
 import { cn } from '@/lib/utils';
 
 export type AdjuntoResumen = { id: number; nombre: string; mime: string; tamano: number };
@@ -115,14 +115,7 @@ export function Conversacion({
                 <InputError message={errores.cuerpo} />
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex flex-wrap items-center gap-3">
-                        <Input
-                            type="file"
-                            multiple
-                            accept=".jpg,.jpeg,.png,.webp,.pdf"
-                            className="max-w-64"
-                            aria-label="Adjuntar archivos"
-                            onChange={(e) => form.setData('adjuntos', Array.from(e.target.files ?? []))}
-                        />
+                        <SelectorArchivos id="adjuntos-mensaje" archivos={form.data.adjuntos} onChange={(a) => form.setData('adjuntos', a)} />
                         {permiteInterno && (
                             <label className="flex items-center gap-2 text-sm">
                                 <input type="checkbox" checked={form.data.interno} onChange={(e) => form.setData('interno', e.target.checked)} />
@@ -134,7 +127,7 @@ export function Conversacion({
                         type="submit"
                         disabled={form.processing}
                         className="rounded-md px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-                        style={{ background: 'var(--marca, #2563eb)' }}
+                        style={{ background: 'var(--marca, var(--primary))' }}
                     >
                         Enviar
                     </button>

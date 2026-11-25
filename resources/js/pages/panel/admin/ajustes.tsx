@@ -1,4 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
+import { SelectorArchivos } from '@/components/selector-archivos';
 import type { FormEvent } from 'react';
 import { Campo, claseTextarea } from '@/components/portal/campo';
 import { Button } from '@/components/ui/button';
@@ -59,7 +60,7 @@ export default function Ajustes({ empresa, sla, status }: Props) {
                         <Campo id="logo" etiqueta="Logo (PNG, JPG o WEBP, máx. 1 MB)" error={errores.logo}>
                             <div className="flex items-center gap-3">
                                 {empresa.logo && <img src={empresa.logo} alt="Logo actual" className="h-9 w-9 rounded object-contain" />}
-                                <Input id="logo" type="file" accept=".png,.jpg,.jpeg,.webp" onChange={(e) => form.setData('logo', e.target.files?.[0] ?? null)} />
+                                <SelectorArchivos id="logo" texto="Elegir logo" accept=".png,.jpg,.jpeg,.webp" multiple={false} archivos={form.data.logo ? [form.data.logo] : []} onChange={(a) => form.setData('logo', a[0] ?? null)} />
                             </div>
                         </Campo>
                     </div>

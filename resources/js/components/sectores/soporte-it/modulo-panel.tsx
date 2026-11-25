@@ -26,7 +26,7 @@ export function ModuloSoporteItPanel({ numero, impacto, urgencia, equipo }: Prop
                         <p className="text-muted-foreground">
                             {equipo.tipo} · {equipo.ubicacion}
                         </p>
-                        <p className="text-xs text-muted-foreground">{equipo.incidencias} incidencias en total</p>
+                        <p className="text-xs text-muted-foreground">{equipo.incidencias} {equipo.incidencias === 1 ? 'incidencia' : 'incidencias'} en total</p>
                     </>
                 ) : (
                     <p className="text-muted-foreground">Sin equipo asociado</p>
